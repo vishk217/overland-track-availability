@@ -7,4 +7,4 @@ RUN pip install -r requirements.txt
 
 COPY *.py ./
 
-CMD ["app.lambda_handler"]
+CMD ["lambda_function.lambda_handler"]

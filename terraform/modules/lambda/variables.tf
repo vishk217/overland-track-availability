@@ -3,18 +3,6 @@ variable "function_name" {
   type        = string
 }
 
-variable "handler" {
-  description = "Lambda function handler"
-  type        = string
-  default     = "lambda_function.lambda_handler"
-}
-
-variable "runtime" {
-  description = "Lambda runtime"
-  type        = string
-  default     = "python3.9"
-}
-
 variable "timeout" {
   description = "Lambda timeout in seconds"
   type        = number
