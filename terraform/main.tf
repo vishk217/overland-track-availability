@@ -32,7 +32,7 @@ module "ecr" {
 module "lambda" {
   source               = "./modules/lambda"
   function_name        = var.lambda_function_name
-  image_uri           = "public.ecr.aws/lambda/python:3.9"
+  image_uri           = "${module.ecr.repository_url}:latest"
   s3_bucket_arn        = module.s3.bucket_arn
   environment_variables = {
     S3_BUCKET = module.s3.bucket_name
