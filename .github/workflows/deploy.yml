@@ -22,11 +22,11 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
     
-    - name: Deploy Infrastructure
+    - name: Deploy ECR Repository
       run: |
         cd terraform
         terraform init
-        terraform apply -auto-approve
+        terraform apply -target=module.ecr -auto-approve
     
     - name: Login to ECR
       run: |
@@ -39,11 +39,10 @@ jobs:
         docker tag overland-track-lambda:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com/overland-track-lambda:latest
         docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com/overland-track-lambda:latest
     
-    - name: Update Lambda Function
+    - name: Deploy Remaining Infrastructure
       run: |
-        aws lambda update-function-code \
-          --function-name overland-track-automation \
-          --image-uri ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com/overland-track-lambda:latest
+        cd terraform
+        terraform apply -auto-approve
     
     - name: Upload Frontend to S3
       run: |
