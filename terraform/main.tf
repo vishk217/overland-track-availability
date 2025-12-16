@@ -1,8 +1,9 @@
 terraform {
   backend "s3" {
-    bucket = "overland-track-terraform-state"
-    key    = "terraform.tfstate"
-    region = "ap-southeast-2"
+    bucket  = "overland-track-terraform-state"
+    key     = "terraform.tfstate"
+    region  = "ap-southeast-2"
+    encrypt = true
   }
   
   required_providers {
