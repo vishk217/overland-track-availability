@@ -21,3 +21,9 @@ variable "lambda_function_name" {
   type        = string
   default     = "overland-track-automation"
 }
+
+variable "image_tag" {
+  description = "Docker image tag for Lambda function"
+  type        = string
+  default     = "latest"
+}
