@@ -3,6 +3,7 @@ name: Deploy Overland Track App
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy:
