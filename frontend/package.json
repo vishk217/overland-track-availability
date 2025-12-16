@@ -1,0 +1,11 @@
+{
+  "name": "overland-track-availability",
+  "version": "1.0.0",
+  "description": "Monthly view of the booking availability of the Overland Track",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vishal Katwe",
+  "license": "ISC"
+}
