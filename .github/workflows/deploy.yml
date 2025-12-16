@@ -35,14 +35,15 @@ jobs:
     - name: Build and Push Docker Image
       run: |
         cd backend
+        IMAGE_TAG=${{ github.sha }}
         docker build -t overland-track-lambda .
-        docker tag overland-track-lambda:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com/overland-track-lambda:latest
-        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com/overland-track-lambda:latest
+        docker tag overland-track-lambda:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com/overland-track-lambda:$IMAGE_TAG
+        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com/overland-track-lambda:$IMAGE_TAG
     
     - name: Deploy Remaining Infrastructure
       run: |
         cd terraform
-        terraform apply -auto-approve
+        terraform apply -var="image_tag=${{ github.sha }}" -auto-approve
     
     - name: Upload Frontend to S3
       run: |
