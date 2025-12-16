@@ -45,6 +45,19 @@ jobs:
         cd terraform
         terraform apply -var="image_tag=${{ github.sha }}" -auto-approve
     
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+    
+    - name: Build Angular App
+      run: |
+        cd frontend
+        npm ci
+        npm run build
+    
     - name: Upload Frontend to S3
       run: |
-        aws s3 sync frontend/ s3://overland-track-frontend --delete
+        aws s3 sync frontend/dist/ s3://overland-track-frontend --delete
