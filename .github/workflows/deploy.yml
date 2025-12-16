@@ -1,0 +1,49 @@
+name: Deploy Overland Track App
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-southeast-2
+    
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+    
+    - name: Deploy Infrastructure
+      run: |
+        cd terraform
+        terraform init
+        terraform apply -auto-approve
+    
+    - name: Login to ECR
+      run: |
+        aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com
+    
+    - name: Build and Push Docker Image
+      run: |
+        cd backend
+        docker build -t overland-track-lambda .
+        docker tag overland-track-lambda:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com/overland-track-lambda:latest
+        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com/overland-track-lambda:latest
+    
+    - name: Update Lambda Function
+      run: |
+        aws lambda update-function-code \
+          --function-name overland-track-automation \
+          --image-uri ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com/overland-track-lambda:latest
+    
+    - name: Upload Frontend to S3
+      run: |
+        aws s3 sync frontend/ s3://overland-track-frontend --delete
