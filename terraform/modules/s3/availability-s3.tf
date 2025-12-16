@@ -5,14 +5,15 @@ resource "aws_s3_bucket" "overland_data" {
 resource "aws_s3_bucket_public_access_block" "overland_data" {
   bucket = aws_s3_bucket.overland_data.id
 
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
 }
 
 resource "aws_s3_bucket_policy" "overland_data" {
   bucket = aws_s3_bucket.overland_data.id
+  depends_on = [aws_s3_bucket_public_access_block.overland_data]
 
   policy = jsonencode({
     Version = "2012-10-17"
