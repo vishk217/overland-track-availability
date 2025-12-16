@@ -7,5 +7,5 @@ RUN pip install -r requirements.txt
 
 COPY *.py ./
 
-ENTRYPOINT ["/usr/local/bin/python", "-m", "awslambdaric"]
+ENTRYPOINT ["python3", "-m", "awslambdaric"]
 CMD ["lambda_function.lambda_handler"]
