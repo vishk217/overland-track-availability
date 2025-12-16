@@ -7,6 +7,7 @@ variable "aws_region" {
 variable "s3_bucket_name" {
   description = "Name of the S3 bucket for data"
   type        = string
+  default     = "overland-track-data"
 }
 
 variable "frontend_bucket_name" {
