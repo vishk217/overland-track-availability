@@ -61,7 +61,7 @@ class OverlandTrackAutomation:
                         
                         date = "/".join([day, month, year])
                         response[date] = availability or "Unavailable"
-                        print(f"{date} - {availability or "Unavailable"}")
+                        print(f"{date} - {availability or 'Unavailable'}")
 
                         lastDate = date
 
