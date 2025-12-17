@@ -19,9 +19,15 @@ provider "aws" {
 }
 
 module "s3" {
-  source               = "./modules/s3"
-  bucket_name          = var.s3_bucket_name
-  frontend_bucket_name = var.frontend_bucket_name
+  source                      = "./modules/s3"
+  bucket_name                 = var.s3_bucket_name
+  frontend_bucket_name        = var.frontend_bucket_name
+}
+
+module "cloudfront" {
+  source                  = "./modules/cloudfront"
+  frontend_bucket_domain_name   = module.s3.frontend_bucket_domain_name
+  frontend_bucket_name          = var.frontend_bucket_name
 }
 
 module "ecr" {

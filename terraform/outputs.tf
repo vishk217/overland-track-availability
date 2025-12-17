@@ -1,28 +1,14 @@
-output "s3_bucket_name" {
-  description = "Name of the S3 bucket"
-  value       = module.s3.bucket_name
+output "cloudfront_domain_name" {
+  description = "CloudFront distribution domain name (HTTPS URL)"
+  value       = "https://${module.cloudfront.cloudfront_domain_name}"
 }
 
-output "s3_bucket_url" {
-  description = "URL of the S3 bucket"
-  value       = module.s3.bucket_url
+output "cloudfront_distribution_id" {
+  description = "CloudFront distribution ID"
+  value       = module.cloudfront.cloudfront_distribution_id
 }
 
-output "lambda_function_name" {
-  description = "Name of the Lambda function"
-  value       = module.lambda.function_name
-}
-
-output "lambda_role_arn" {
-  description = "ARN of the Lambda IAM role"
-  value       = module.lambda.role_arn
-}
-
-output "ecr_repository_url" {
-  description = "URL of the ECR repository"
-  value       = module.ecr.repository_url
-}
-
-output "frontend_url" {
-  value = "http://${module.s3.frontend_website_endpoint}"
+output "frontend_bucket_name" {
+  description = "Frontend S3 bucket name"
+  value       = module.s3.frontend_bucket_name
 }
