@@ -21,6 +21,13 @@ class OverlandTrackAutomation:
             try:
                 browser = p.chromium.launch(
                     headless=True,
+                    args=[
+                        "--no-sandbox",
+                        "--disable-setuid-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--single-process",
+                        "--disable-gpu",
+                    ]
                 )
                 context = browser.new_context(ignore_https_errors=True)
                 page = context.new_page()
