@@ -18,7 +18,7 @@ output "frontend_bucket_name" {
   value       = aws_s3_bucket.frontend.bucket
 }
 
-output "frontend_website_endpoint" {
-  description = "Website endpoint of the frontend S3 bucket"
-  value       = aws_s3_bucket_website_configuration.frontend.website_endpoint
+output "frontend_bucket_domain_name" {
+  description = "Domain name of the frontend S3 bucket"
+  value       = aws_s3_bucket.frontend.bucket_domain_name
 }
