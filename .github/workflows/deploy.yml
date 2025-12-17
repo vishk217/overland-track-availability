@@ -60,4 +60,4 @@ jobs:
     
     - name: Upload Frontend to S3
       run: |
-        aws s3 sync frontend/dist/ s3://overland-track-frontend --delete
+        aws s3 sync frontend/dist/browser/ s3://overland-track-frontend --delete
