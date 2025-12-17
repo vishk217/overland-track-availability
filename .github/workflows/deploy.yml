@@ -43,7 +43,7 @@ jobs:
     - name: Deploy Remaining Infrastructure
       run: |
         cd terraform
-        terraform apply -var="image_tag=${{ github.sha }}" -auto-approve
+        terraform apply -refresh-only -var="image_tag=${{ github.sha }}" -auto-approve
     
     - name: Setup Node.js
       uses: actions/setup-node@v4
