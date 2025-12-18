@@ -62,4 +62,6 @@ resource "aws_cloudfront_distribution" "frontend" {
     minimum_protocol_version = "TLSv1.2_2021"
   }
 
+  wait_for_deployment = false
+
 }
