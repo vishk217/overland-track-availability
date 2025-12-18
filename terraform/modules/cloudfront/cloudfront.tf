@@ -48,6 +48,8 @@ resource "aws_cloudfront_distribution" "frontend" {
     response_page_path = "/index.html"
   }
 
+  price_class = "PriceClass_200"
+
   restrictions {
     geo_restriction {
       restriction_type = "none"
