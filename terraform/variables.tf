@@ -37,5 +37,5 @@ variable "domain_name" {
 variable "certificate_arn" {
   description = "ACM certificate ARN for the custom domain"
   type        = string
-  default     = "arn:aws:acm:ap-southeast-2:842556421867:certificate/d106e3a3-721f-431b-9412-c3535ca08a17"
+  default     = "arn:aws:acm:us-east-1:842556421867:certificate/c0f128b0-187f-4c19-8d40-12dfa0e1dee8"
 }
