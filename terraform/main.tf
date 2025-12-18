@@ -28,6 +28,8 @@ module "cloudfront" {
   source                  = "./modules/cloudfront"
   frontend_bucket_domain_name   = module.s3.frontend_bucket_domain_name
   frontend_bucket_name          = var.frontend_bucket_name
+  domain_name                   = var.domain_name
+  certificate_arn               = var.certificate_arn
 }
 
 module "ecr" {
