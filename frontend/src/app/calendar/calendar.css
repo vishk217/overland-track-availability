@@ -1,0 +1,121 @@
+.calendar-container {
+  display: flex;
+  flex-direction: column;
+  padding: 0 10em 0 10em;
+
+  font-family: 'Router', sans-serif;
+}
+
+.calendar-headline {
+  display: flex;
+  margin-bottom: 10px;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.calendar-headline-month {
+  font-weight: 600;
+}
+
+.calendar-headline-controls {
+  display: flex;
+}
+
+.calendar-headline-control {
+  cursor: pointer;
+}
+
+.calendar-headline-control:hover {
+  text-decoration: underline;
+}
+
+.calendar-headline-control-today {
+  margin: 0 10px;
+}
+
+.calendar-weeks-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.calendar-weeks-grid-cell {
+  text-align: center;
+}
+
+.calendar-grid-cell-inactive {
+  color: #9e9e9e;
+  opacity: 0.7;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  color: white;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.calendar-grid-cell {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+
+  border: 2px solid #dee2e6;
+  cursor: pointer;
+  transition: background 0.3s ease;
+
+  width: 100% !important;
+  min-height: 132px !important;
+  text-align: center;
+}
+
+.calendar-grid-cell-available {
+  background: white;
+}
+
+.calendar-grid-cell-unavailable {
+  background: #beb7b3;
+}
+
+.calendar-cell-day-date {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.calendar-cell-day {
+  background: #6b6c1c;
+  padding: 10px;
+}
+
+.calendar-cell-date {
+  background: #57759e;
+  padding: 10px;
+}
+
+.calendar-cell-day-status-availability {
+  color: black;
+  transition: color 0.3s ease;
+}
+
+.calendar-cell-status {
+  text-align: center;
+  margin-top: 10px;
+  width: 100%
+}
+
+.calendar-cell-availability {
+  padding: 10px;
+}
+
+.calendar-grid-cell:hover {
+  background: #55437e;
+}
+
+.calendar-grid-cell:hover .calendar-cell-day-status-availability {
+  color: white;
+}

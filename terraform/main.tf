@@ -42,6 +42,7 @@ module "lambda" {
   function_name        = var.lambda_function_name
   image_uri           = "${module.ecr.repository_url}:${var.image_tag}"
   s3_bucket_arn        = module.s3.bucket_arn
+  schedule_expression  = "rate(5 minutes)"
   environment_variables = {
     S3_BUCKET = module.s3.bucket_name
   }

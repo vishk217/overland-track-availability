@@ -19,19 +19,11 @@ resource "aws_s3_bucket_policy" "overland_data" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "AllowFrontendAccess"
+        Sid       = "AllowPublicAccess"
         Effect    = "Allow"
         Principal = "*"
         Action    = "s3:GetObject"
         Resource  = "${aws_s3_bucket.overland_data.arn}/*"
-        Condition = {
-          StringLike = {
-            "aws:Referer" = [
-              "https://${var.frontend_bucket_name}/*",
-              "https://${var.frontend_bucket_name}.s3-website-ap-southeast-2.amazonaws.com/*"
-            ]
-          }
-        }
       }
     ]
   })
