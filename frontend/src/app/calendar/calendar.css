@@ -46,7 +46,11 @@
 
 .calendar-grid-cell-inactive {
   color: #9e9e9e;
-  opacity: 0.7;
+  opacity: 0.6;
+}
+
+.calendar-grid-cell-past {
+  opacity: 0.5;
 }
 
 .calendar-grid {
@@ -79,6 +83,7 @@
 
 .calendar-grid-cell-unavailable {
   background: #beb7b3;
+  cursor: not-allowed;
 }
 
 .calendar-cell-day-date {
@@ -94,7 +99,7 @@
 
 .calendar-cell-date {
   background: #57759e;
-  padding: 10px;
+  padding: 8px;
 }
 
 .calendar-cell-day-status-availability {

@@ -31,8 +31,9 @@
               activeDay()?.toISODate() === dayOfMonth.toISODate(),
             'calendar-grid-cell-inactive':
               dayOfMonth.month !== firstDayOfActiveMonth().month,
+            'calendar-grid-cell-past': dayOfMonth < today().startOf('day'),
             'calendar-grid-cell-available': getAvailabilityStatus(dayOfMonth) === 'Available',
-            'calendar-grid-cell-unavailable': getAvailabilityStatus(dayOfMonth) === 'Unavailable' || getAvailabilityStatus(dayOfMonth) === 'Unknown'
+            'calendar-grid-cell-unavailable': getAvailabilityStatus(dayOfMonth) === 'Fully Booked' || getAvailabilityStatus(dayOfMonth) === 'Unknown'
           }"
           (click)="activeDay.set(dayOfMonth)"
         >
