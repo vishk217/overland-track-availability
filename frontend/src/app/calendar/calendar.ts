@@ -85,7 +85,7 @@ export class CalendarComponent implements OnInit {
     const status = data.response[dateKey];
     
     if (!status) return 'Unknown';
-    if (status === 'Unavailable') return 'Unavailable';
+    if (status === 'Fully Booked') return 'Fully Booked';
     if (status.includes('Available')) return 'Available';
     return 'Unknown';
   }
@@ -95,6 +95,10 @@ export class CalendarComponent implements OnInit {
     if (!data) return '';
     
     const dateKey = date.toFormat('d/MMM/yyyy');
+
+    if (data.response[dateKey] && data.response[dateKey] === "Fully Booked") {
+      return ""
+    }
     return data.response[dateKey] || '';
   }
 }
