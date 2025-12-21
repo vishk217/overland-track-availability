@@ -9,7 +9,11 @@ def lambda_handler(event, context):
         automation = OverlandTrackAutomation()
         result = automation.automation()
         
-        # Upload to S3
+        # Check if automation returned valid data
+        if not result or not result.get('response'):
+            raise Exception("Automation failed to return valid data")
+        
+        # Upload to S3 only if automation succeeded
         s3 = boto3.client('s3')
         bucket_name = os.environ.get('S3_BUCKET', 'overland-track-data')
         
