@@ -1,6 +1,9 @@
 <div class="calendar-container">
     <p class="page-header">Overland Track Availability</p>
     <p class="page-description">Booking availability of the Overland Track by month</p>
+    @if (availabilityData()) {
+      <p class="last-updated">Up to date as of {{ availabilityData()?.lastUpdated }}</p>
+    }
     <div class="calendar-headline">
       <div class="calendar-headline-month">
         {{ firstDayOfActiveMonth().monthShort }},
@@ -44,5 +47,8 @@
           </div>
         </div>
       }
+    </div>
+    <div class="support-section">
+      <p>Found the availability that you were after? <a href="https://buymeacoffee.com/derrm024" target="_blank" class="coffee-link">☕ Buy me a coffee</a></p>
     </div>
 </div>
