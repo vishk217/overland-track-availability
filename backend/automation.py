@@ -17,6 +17,8 @@ class OverlandTrackAutomation:
         start_time = time.time()
         print("Running Automation...")
         response = {}
+        browser = None
+        context = None
 
         with sync_playwright() as p:
             try:
@@ -26,7 +28,10 @@ class OverlandTrackAutomation:
                         "--no-sandbox",
                         "--disable-setuid-sandbox",
                         "--disable-dev-shm-usage",
-                        "--disable-gpu"
+                        "--disable-gpu",
+                        "--disable-background-timer-throttling",
+                        "--disable-backgrounding-occluded-windows",
+                        "--disable-renderer-backgrounding"
                     ]
                 )
                 context = browser.new_context(ignore_https_errors=True)
@@ -80,8 +85,19 @@ class OverlandTrackAutomation:
 
             finally:
                 end_time = time.time()
-                print(f"Closing the browser... (Total runtime: {end_time - start_time:.2f}s)")
-                if browser:
-                    browser.close()
+                print(f"Cleaning up... (Total runtime: {end_time - start_time:.2f}s)")
+                
+                # Explicit cleanup in correct order
+                try:
+                    if context:
+                        context.close()
+                except:
+                    pass
+                    
+                try:
+                    if browser:
+                        browser.close()
+                except:
+                    pass
         
         return {"lastUpdated": datetime.now(pytz.timezone('Australia/Sydney')).strftime("%B %d, %Y at %I:%M %p AEST"), "response": response}
