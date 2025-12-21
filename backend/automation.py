@@ -9,7 +9,10 @@ class OverlandTrackAutomation:
         pass
     
     def get_next_day(self, date_str):
-        date = datetime.strptime(date_str, "%d/%b/%Y")
+        try:
+            date = datetime.strptime(date_str, "%d/%m/%Y")
+        except ValueError:
+            date = datetime.strptime(date_str, "%d/%b/%Y")
         next_day = date + timedelta(days=1)
         return next_day.strftime("%d/%m/%Y")
 
@@ -81,8 +84,8 @@ class OverlandTrackAutomation:
                         page.wait_for_selector(f"td[data-day='{dateToProcess}']", timeout=2000)
                         page.click(f"td[data-day='{dateToProcess}']")
                         page.wait_for_timeout(500)  # Wait for page to update
-                    except:
-                        print(f"Date {dateToProcess} not found in calendar")
+                    except Exception as e:
+                        print(f"Date {dateToProcess} not found in calendar. Error: {e}")
                         dateToProcess = self.get_next_day(dateToProcess)
                         continue
 
