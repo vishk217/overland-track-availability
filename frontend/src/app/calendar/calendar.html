@@ -1,4 +1,6 @@
 <div class="calendar-container">
+    <p class="page-header">Overland Track Availability</p>
+    <p class="page-description">Booking availability of the Overland Track by month</p>
     <div class="calendar-headline">
       <div class="calendar-headline-month">
         {{ firstDayOfActiveMonth().monthShort }},
@@ -17,11 +19,6 @@
         <div class="calendar-headline-control" (click)="goToNextMonth()">»</div>
       </div>
     </div>
-    <div class="calendar-weeks-grid">
-      @for (weekDay of weekDays(); track $index) {
-        <div class="calendar-weeks-grid-cell">{{ weekDay }}</div>
-      }
-    </div>
     <div class="calendar-grid">
       @for (dayOfMonth of daysOfMonth(); track $index) {
         <div
@@ -35,11 +32,11 @@
             'calendar-grid-cell-available': getAvailabilityStatus(dayOfMonth) === 'Available',
             'calendar-grid-cell-unavailable': getAvailabilityStatus(dayOfMonth) === 'Fully Booked' || getAvailabilityStatus(dayOfMonth) === 'Unknown'
           }"
-          (click)="activeDay.set(dayOfMonth)"
+          (click)="onDateClick(dayOfMonth)"
         >
           <div class="calendar-cell-day-date">
-            <div class="calendar-cell-day">{{ dayOfMonth.toFormat('ccc') }}</div>
-            <div class="calendar-cell-date">{{ dayOfMonth.day }}</div>
+            <div class="calendar-cell-day">{{ dayOfMonth.toFormat('cccc') }}</div>
+            <div class="calendar-cell-date">{{ dayOfMonth.toFormat('d MMM yyyy') }}</div>
           </div>
           <div class="calendar-cell-day-status-availability">
             <div class="calendar-cell-status">{{ getAvailabilityStatus(dayOfMonth) }}</div>

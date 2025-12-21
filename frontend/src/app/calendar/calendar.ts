@@ -101,4 +101,12 @@ export class CalendarComponent implements OnInit {
     }
     return data.response[dateKey] || '';
   }
+
+  onDateClick(date: DateTime): void {
+    if (this.getAvailabilityStatus(date) === 'Available') {
+      window.open('https://azapps.customlinc.com.au/tasparksoverland/BookingCat/Availability/?Category=OVERLAND', '_blank');
+    } else {
+      this.activeDay.set(date);
+    }
+  }
 }
