@@ -34,7 +34,16 @@ class OverlandTrackAutomation:
                         "--disable-renderer-backgrounding"
                     ]
                 )
+                print("Browser launched successfully")
+                
+                # Give browser time to fully initialize
+                time.sleep(2)
+                
+                if not browser:
+                    raise Exception("Failed to launch browser")
+                
                 context = browser.new_context(ignore_https_errors=True)
+                print("Context created successfully")
                 page = context.new_page()
                 page.set_default_timeout(10000)
                 page.goto("https://azapps.customlinc.com.au/tasparksoverland/BookingCat/Availability/?Category=OVERLAND", timeout=30000)
