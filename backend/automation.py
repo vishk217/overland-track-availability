@@ -76,12 +76,13 @@ class OverlandTrackAutomation:
                 print(f"Today's Date: {dateToProcess}")
 
                 while True:
-                    page.click("#datetimepicker-input")
-                    page.wait_for_selector(".bootstrap-datetimepicker-widget")
+                    if not page.locator(".bootstrap-datetimepicker-widget").is_visible():
+                        page.click("#datetimepicker-input")
+                        page.wait_for_selector(".bootstrap-datetimepicker-widget")
                     
                     # Try to click the date, if not found, skip
                     try:
-                        page.wait_for_selector(f"td[data-day='{dateToProcess}']", timeout=2000)
+                        page.wait_for_selector(f"td[data-day='{dateToProcess}']", timeout=5000)
                         page.click(f"td[data-day='{dateToProcess}']")
                         page.wait_for_timeout(500)  # Wait for page to update
                     except Exception as e:
