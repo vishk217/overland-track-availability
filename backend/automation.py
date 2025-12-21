@@ -15,9 +15,10 @@ class OverlandTrackAutomation:
     def automation(self):
         start_time = time.time()
         print("Running Automation...")
+        response = {}
+        browser = None
 
         with sync_playwright() as p:
-
             try:
                 browser = p.chromium.launch(
                     headless=True,
@@ -32,15 +33,12 @@ class OverlandTrackAutomation:
                 context = browser.new_context(ignore_https_errors=True)
                 page = context.new_page()
                 page.set_default_timeout(10000)
-                page.goto("https://azapps.customlinc.com.au/tasparksoverland/BookingCat/Availability/?Category=OVERLAND")
-
-                response = {}
+                page.goto("https://azapps.customlinc.com.au/tasparksoverland/BookingCat/Availability/?Category=OVERLAND", timeout=30000)
                 
                 dateToProcess = page.get_attribute("#datetimepicker-input", "value")
                 print(f"Today's Date: {dateToProcess}")
 
                 while True:
-
                     page.click("#datetimepicker-input")
                     page.wait_for_selector(".bootstrap-datetimepicker-widget")
                     
@@ -57,8 +55,7 @@ class OverlandTrackAutomation:
                     # Check if no availability text appears
                     if page.locator("text=No availability found").count() > 0:
                         print(f"All dates processed. Terminating Automation..")
-                        outcome = {"lastUpdated": datetime.now().strftime("%B %d, %Y at %I:%M %p"), "response": response}
-                        return outcome
+                        break
 
                     for i in range(1, 6):
                         day = page.inner_text(f"#AvailabilityTable > div > div.times-table-template.mt-3.p-0 > div > div > div > div > div.cl_availability-table__body > div > div > div:nth-child({i}) > availabilty-calendar-cell > div > div.GBEDayDate > span.GBEDay.ng-binding")
@@ -80,10 +77,12 @@ class OverlandTrackAutomation:
             
             except Exception as e:
                 print(f"Error during execution: {e}")
+                return None
 
             finally:
                 end_time = time.time()
                 print(f"Closing the browser... (Total runtime: {end_time - start_time:.2f}s)")
-                browser.close()
-
-print(OverlandTrackAutomation().automation())
+                if browser:
+                    browser.close()
+        
+        return {"lastUpdated": datetime.now().strftime("%B %d, %Y at %I:%M %p"), "response": response}
