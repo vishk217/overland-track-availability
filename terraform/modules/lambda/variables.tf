@@ -12,7 +12,7 @@ variable "timeout" {
 variable "memory_size" {
   description = "Lambda memory size in MB"
   type        = number
-  default     = 1024
+  default     = 2048
 }
 
 variable "environment_variables" {
