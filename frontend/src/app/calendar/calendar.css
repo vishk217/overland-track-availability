@@ -46,9 +46,8 @@
   margin-bottom: 20px;
   justify-content: space-between;
   padding: 15px 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  border: 1px solid #dee2e6;
+  background: #f8f9fa;
+  align-items: center;
 }
 
 .calendar-headline-month {
@@ -197,10 +196,13 @@
   font-style: italic;
 }
 .support-section {
+  display: flex;
+  flex-direction: column;
   text-align: center;
   margin-top: 30px;
   padding: 20px;
   background: #f8f9fa;
+  align-items: center;
 }
 
 .coffee-link {
