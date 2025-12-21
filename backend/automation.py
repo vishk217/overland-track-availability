@@ -67,7 +67,10 @@ class OverlandTrackAutomation:
                         availability = page.inner_text(f"#AvailabilityTable > div > div.times-table-template.mt-3.p-0 > div > div > div > div > div.cl_availability-table__body > div > div > div:nth-child({i}) > availabilty-calendar-cell > div > div.GBEPaxAvailability.ng-scope.text-center > div")
                         
                         date = "/".join([day, month, year])
-                        availabilityString = f"{availability} spots left"
+                        if availability:
+                            availabilityString = f"{availability} spots left"
+                        else:
+                            availabilityString = None
                         response[date] = availabilityString or "Fully Booked"
                         print(f"{date} - {availabilityString or 'Fully Booked'}")
 
