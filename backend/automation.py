@@ -1,6 +1,7 @@
 from playwright.sync_api import sync_playwright
 from datetime import datetime, timedelta
 import time
+import pytz
 
 class OverlandTrackAutomation:
 
@@ -26,8 +27,11 @@ class OverlandTrackAutomation:
                         "--no-sandbox",
                         "--disable-setuid-sandbox",
                         "--disable-dev-shm-usage",
-                        "--single-process",
                         "--disable-gpu",
+                        "--disable-web-security",
+                        "--disable-features=VizDisplayCompositor",
+                        "--memory-pressure-off",
+                        "--max_old_space_size=4096"
                     ]
                 )
                 context = browser.new_context(ignore_https_errors=True)
@@ -85,4 +89,4 @@ class OverlandTrackAutomation:
                 if browser:
                     browser.close()
         
-        return {"lastUpdated": datetime.now().strftime("%B %d, %Y at %I:%M %p"), "response": response}
+        return {"lastUpdated": datetime.now(pytz.timezone('Australia/Sydney')).strftime("%B %d, %Y at %I:%M %p AEST"), "response": response}
