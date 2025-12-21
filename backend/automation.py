@@ -25,13 +25,34 @@ class OverlandTrackAutomation:
                 browser = p.chromium.launch(
                     headless=True,
                     args=[
-                        "--no-sandbox",
-                        "--disable-setuid-sandbox",
-                        "--disable-dev-shm-usage",
                         "--disable-gpu",
+                        "--no-sandbox",
+                        "--single-process",
+                        "--no-zygote",
+                        "--disable-setuid-sandbox",
+                        "--disable-accelerated-2d-canvas",
+                        "--disable-dev-shm-usage",
+                        "--no-first-run",
+                        "--no-default-browser-check",
+                        "--disable-background-networking",
                         "--disable-background-timer-throttling",
-                        "--disable-backgrounding-occluded-windows",
-                        "--disable-renderer-backgrounding"
+                        "--disable-client-side-phishing-detection",
+                        "--disable-component-update",
+                        "--disable-default-apps",
+                        "--disable-domain-reliability",
+                        "--disable-features=AudioServiceOutOfProcess",
+                        "--disable-hang-monitor",
+                        "--disable-ipc-flooding-protection",
+                        "--disable-popup-blocking",
+                        "--disable-prompt-on-repost",
+                        "--disable-renderer-backgrounding",
+                        "--disable-sync",
+                        "--force-color-profile=srgb",
+                        "--metrics-recording-only",
+                        "--mute-audio",
+                        "--no-pings",
+                        "--use-gl=swiftshader",
+                        "--window-size=1280,1696"
                     ]
                 )
                 print("Browser launched successfully")
