@@ -17,7 +17,6 @@ class OverlandTrackAutomation:
         start_time = time.time()
         print("Running Automation...")
         response = {}
-        browser = None
 
         with sync_playwright() as p:
             try:
