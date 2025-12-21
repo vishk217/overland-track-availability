@@ -27,11 +27,7 @@ class OverlandTrackAutomation:
                         "--no-sandbox",
                         "--disable-setuid-sandbox",
                         "--disable-dev-shm-usage",
-                        "--disable-gpu",
-                        "--disable-web-security",
-                        "--disable-features=VizDisplayCompositor",
-                        "--memory-pressure-off",
-                        "--max_old_space_size=4096"
+                        "--disable-gpu"
                     ]
                 )
                 context = browser.new_context(ignore_https_errors=True)
