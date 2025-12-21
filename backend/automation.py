@@ -67,8 +67,9 @@ class OverlandTrackAutomation:
                         availability = page.inner_text(f"#AvailabilityTable > div > div.times-table-template.mt-3.p-0 > div > div > div > div > div.cl_availability-table__body > div > div > div:nth-child({i}) > availabilty-calendar-cell > div > div.GBEPaxAvailability.ng-scope.text-center > div")
                         
                         date = "/".join([day, month, year])
-                        response[date] = f"{availability} spots left" or "Fully Booked"
-                        print(f"{date} - {f"{availability} spots left" or 'Fully Booked'}")
+                        availabilityString = f"{availability} spots left"
+                        response[date] = availabilityString or "Fully Booked"
+                        print(f"{date} - {availabilityString or 'Fully Booked'}")
 
                         lastDate = date
 
@@ -82,3 +83,4 @@ class OverlandTrackAutomation:
                 print(f"Closing the browser... (Total runtime: {end_time - start_time:.2f}s)")
                 browser.close()
 
+print(OverlandTrackAutomation().automation())

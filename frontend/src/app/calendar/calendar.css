@@ -2,46 +2,71 @@
   display: flex;
   flex-direction: column;
   padding: 0 10em 0 10em;
+  margin-bottom: 5em;
 
   font-family: 'Router', sans-serif;
 }
 
+@media (max-width: 768px) {
+  .calendar-container {
+    padding: 0 1em;
+  }
+  
+  .calendar-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+    margin: 0 4em;
+  }
+}
+
 .calendar-headline {
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 15px 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #dee2e6;
 }
 
 .calendar-headline-month {
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1.4em;
+  color: #495057;
+  text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
 }
 
 .calendar-headline-controls {
   display: flex;
+  gap: 5px;
 }
 
 .calendar-headline-control {
   cursor: pointer;
+  padding: 8px 12px;
+  background: #55437e;
+  color: white;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  border: 1px solid #443366;
 }
 
 .calendar-headline-control:hover {
-  text-decoration: underline;
+  background: #443366;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
 .calendar-headline-control-today {
-  margin: 0 10px;
+  margin: 0;
+  background: #28a745;
+  border-color: #1e7e34;
 }
 
-.calendar-weeks-grid {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  font-size: 12px;
-  margin-bottom: 10px;
-}
-
-.calendar-weeks-grid-cell {
-  text-align: center;
+.calendar-headline-control-today:hover {
+  background: #1e7e34;
 }
 
 .calendar-grid-cell-inactive {
@@ -56,6 +81,7 @@
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
   color: white;
   font-size: 1em;
   font-weight: bold;
@@ -117,10 +143,27 @@
   padding: 10px;
 }
 
-.calendar-grid-cell:hover {
+.calendar-grid-cell-available:hover {
   background: #55437e;
 }
 
-.calendar-grid-cell:hover .calendar-cell-day-status-availability {
+.calendar-grid-cell-available:hover .calendar-cell-day-status-availability {
   color: white;
+}
+
+.page-header {
+  text-align: center;
+  margin: 30px 10em 30px 10em;
+  font-size: 2em;
+  background-color: #55437e;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: inset 2px 2px 5px rgba(255,255,255,0.2), inset -2px -2px 5px rgba(0,0,0,0.3);
+}
+.page-description {
+  text-align: center;
+  font-size: 1.2em;
+  color: #666;
+  margin-bottom: 30px;
 }
