@@ -36,7 +36,7 @@ jobs:
       run: |
         cd backend
         IMAGE_TAG=${{ github.sha }}
-        docker build -t overland-track-lambda .
+        docker buildx build --platform linux/arm64 -t overland-track-lambda .
         docker tag overland-track-lambda:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com/overland-track-lambda:$IMAGE_TAG
         docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com/overland-track-lambda:$IMAGE_TAG
     

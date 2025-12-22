@@ -26,6 +26,7 @@ resource "aws_cloudfront_distribution" "frontend" {
 
     forwarded_values {
       query_string = false
+      headers      = ["CloudFront-Viewer-Country", "CloudFront-Viewer-Country-Name", "CloudFront-Viewer-Country-Region", "CloudFront-Viewer-City"]
       cookies {
         forward = "none"
       }
