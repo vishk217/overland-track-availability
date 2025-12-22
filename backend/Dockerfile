@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright/python:v1.56.0-jammy-arm64
+FROM mcr.microsoft.com/playwright/python:v1.56.0-jammy-amd64
 
 WORKDIR /var/task
 
