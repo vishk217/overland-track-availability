@@ -50,6 +50,7 @@ resource "aws_lambda_function" "function" {
   image_uri    = var.image_uri
   timeout      = var.timeout
   memory_size  = var.memory_size
+  architectures = ["arm64"]
 
   environment {
     variables = var.environment_variables
