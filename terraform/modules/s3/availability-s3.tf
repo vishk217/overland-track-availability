@@ -28,6 +28,7 @@ resource "aws_s3_bucket_policy" "overland_data" {
           StringLike = {
             "aws:Referer" = [
               "https://overlandtrackavailability.com/*",
+              "https://www.overlandtrackavailability.com/*",
               "http://localhost:4200/*"
             ]
           }
@@ -45,6 +46,7 @@ resource "aws_s3_bucket_cors_configuration" "overland_data" {
     allowed_methods = ["GET"]
     allowed_origins = [
       "https://overlandtrackavailability.com",
+      "https://www.overlandtrackavailability.com",
       "http://localhost:4200"
     ]
     max_age_seconds = 3000
