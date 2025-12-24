@@ -29,9 +29,9 @@ variable "image_tag" {
 }
 
 variable "domain_name" {
-  description = "Custom domain name for CloudFront distribution"
-  type        = string
-  default     = "overlandtrackavailability.com"
+  description = "Custom domain names for CloudFront distribution"
+  type        = list(string)
+  default     = ["overlandtrackavailability.com", "www.overlandtrackavailability.com"]
 }
 
 variable "certificate_arn" {

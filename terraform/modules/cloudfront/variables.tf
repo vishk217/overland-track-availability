@@ -9,8 +9,8 @@ variable "frontend_bucket_name" {
 }
 
 variable "domain_name" {
-  description = "Custom domain name for CloudFront distribution"
-  type        = string
+  description = "Custom domain names for CloudFront distribution"
+  type        = list(string)
 }
 
 variable "certificate_arn" {
