@@ -77,7 +77,7 @@ class OverlandTrackAutomation:
 
                 while True:
                     if not page.locator(".bootstrap-datetimepicker-widget").is_visible():
-                        page.click("#datetimepicker-input")
+                        page.click("#datetimepicker- > div.input-group-append")
                         page.wait_for_selector(".bootstrap-datetimepicker-widget")
                     
                     # Try to click the date, if not found, skip
