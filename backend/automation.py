@@ -2,6 +2,7 @@ from playwright.sync_api import sync_playwright
 from datetime import datetime, timedelta
 import time
 import pytz
+import base64
 
 class OverlandTrackAutomation:
 
@@ -88,7 +89,9 @@ class OverlandTrackAutomation:
                     except Exception as e:
                         print(f"Date {dateToProcess} not found in calendar. Error: {e}")
                         dateToProcess = self.get_next_day(dateToProcess)
-                        continue
+                        screenshot_bytes = page.screenshot(full_page=True)
+                        break
+                        # continue
 
                     # Check if no availability text appears
                     if page.locator("text=No availability found").count() > 0:
@@ -134,4 +137,4 @@ class OverlandTrackAutomation:
                 except:
                     pass
         
-        return {"lastUpdated": datetime.now(pytz.timezone('Australia/Sydney')).strftime("%B %d, %Y at %I:%M %p AEST"), "response": response}
+        return {"lastUpdated": datetime.now(pytz.timezone('Australia/Sydney')).strftime("%B %d, %Y at %I:%M %p AEST"), "response": response, "screenshot_bytes": base64.b64encode(screenshot_bytes).decode('utf-8')}
