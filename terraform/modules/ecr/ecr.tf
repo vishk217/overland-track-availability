@@ -9,7 +9,7 @@ resource "aws_ecr_lifecycle_policy" "lambda_repo" {
     rules = [
       {
         rulePriority = 1
-        description  = "Keep last 5 images"
+        description  = "Keep last 1 image"
         selection = {
           tagStatus   = "any"
           countType   = "imageCountMoreThan"
