@@ -82,7 +82,7 @@ class OverlandTrackAutomation:
                     
                     # Try to click the date, if not found, skip
                     try:
-                        page.wait_for_selector(f"td[data-day='{dateToProcess}']", timeout=5000)
+                        page.wait_for_selector(f"td[data-day='{dateToProcess}']", timeout=10000)
                         page.click(f"td[data-day='{dateToProcess}']")
                         page.wait_for_timeout(500)  # Wait for page to update
                     except Exception as e:

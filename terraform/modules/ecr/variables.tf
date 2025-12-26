@@ -6,5 +6,5 @@ variable "repository_name" {
 variable "max_image_count" {
   description = "Maximum number of images to keep"
   type        = number
-  default     = 5
+  default     = 1
 }
