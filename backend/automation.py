@@ -2,7 +2,6 @@ from playwright.sync_api import sync_playwright
 from datetime import datetime, timedelta
 import time
 import pytz
-import base64
 
 class OverlandTrackAutomation:
 
@@ -83,15 +82,13 @@ class OverlandTrackAutomation:
                     
                     # Try to click the date, if not found, skip
                     try:
-                        page.wait_for_selector(f"td[data-day='{dateToProcess}']", timeout=10000)
+                        page.wait_for_selector(f"td[data-day='{dateToProcess}']", timeout=5000)
                         page.click(f"td[data-day='{dateToProcess}']")
                         page.wait_for_timeout(500)  # Wait for page to update
                     except Exception as e:
                         print(f"Date {dateToProcess} not found in calendar. Error: {e}")
-                        dateToProcess = self.get_next_day(dateToProcess)
-                        screenshot_bytes = page.screenshot(full_page=True)
-                        break
-                        # continue
+                        page.click(".datepicker-days > table > tbody > tr:last-child > td:last-child")
+                        continue
 
                     # Check if no availability text appears
                     if page.locator("text=No availability found").count() > 0:
@@ -137,4 +134,4 @@ class OverlandTrackAutomation:
                 except:
                     pass
         
-        return {"lastUpdated": datetime.now(pytz.timezone('Australia/Sydney')).strftime("%B %d, %Y at %I:%M %p AEST"), "response": response, "screenshot_bytes": base64.b64encode(screenshot_bytes).decode('utf-8')}
+        return {"lastUpdated": datetime.now(pytz.timezone('Australia/Sydney')).strftime("%B %d, %Y at %I:%M %p AEST"), "response": response}
