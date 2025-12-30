@@ -87,7 +87,7 @@ class OverlandTrackAutomation:
                         page.wait_for_timeout(500)  # Wait for page to update
                     except Exception as e:
                         print(f"Date {dateToProcess} not found in calendar. Error: {e}")
-                        page.click(".datepicker-days > table > tbody > tr:last-child > td:last-child")
+                        page.click(".datepicker-days th.next > span")
                         continue
 
                     # Check if no availability text appears
