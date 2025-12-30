@@ -45,5 +45,6 @@ module "lambda" {
   schedule_expression  = "rate(5 minutes)"
   environment_variables = {
     S3_BUCKET = module.s3.bucket_name
+    TZ = "Australia/Sydney"
   }
 }
