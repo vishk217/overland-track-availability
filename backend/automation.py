@@ -77,7 +77,7 @@ class OverlandTrackAutomation:
 
                 while True:
                     if not page.locator(".bootstrap-datetimepicker-widget").is_visible():
-                        page.click("#datetimepicker-input")
+                        page.click("#datetimepicker- > div.input-group-append")
                         page.wait_for_selector(".bootstrap-datetimepicker-widget")
                     
                     # Try to click the date, if not found, skip
@@ -87,7 +87,7 @@ class OverlandTrackAutomation:
                         page.wait_for_timeout(500)  # Wait for page to update
                     except Exception as e:
                         print(f"Date {dateToProcess} not found in calendar. Error: {e}")
-                        dateToProcess = self.get_next_day(dateToProcess)
+                        page.click(".datepicker-days th.next > span")
                         continue
 
                     # Check if no availability text appears
