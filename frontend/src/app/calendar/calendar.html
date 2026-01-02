@@ -24,28 +24,32 @@
     </div>
     <div class="calendar-grid">
       @for (dayOfMonth of daysOfMonth(); track $index) {
-        <div
-          [ngClass]="{
-            'calendar-grid-cell': true,
-            'calendar-grid-cell-active':
-              activeDay()?.toISODate() === dayOfMonth.toISODate(),
-            'calendar-grid-cell-inactive':
-              dayOfMonth.month !== firstDayOfActiveMonth().month,
-            'calendar-grid-cell-past': dayOfMonth < today().startOf('day'),
-            'calendar-grid-cell-available': getAvailabilityStatus(dayOfMonth) === 'Available',
-            'calendar-grid-cell-unavailable': getAvailabilityStatus(dayOfMonth) === 'Fully Booked' || getAvailabilityStatus(dayOfMonth) === 'Unknown'
-          }"
-          (click)="onDateClick(dayOfMonth)"
-        >
-          <div class="calendar-cell-day-date">
-            <div class="calendar-cell-day">{{ dayOfMonth.toFormat('cccc') }}</div>
-            <div class="calendar-cell-date">{{ dayOfMonth.toFormat('d MMM yyyy') }}</div>
+        @if (dayOfMonth.month === firstDayOfActiveMonth().month) {
+          <div
+            [ngClass]="{
+              'calendar-grid-cell': true,
+              'calendar-grid-cell-active':
+                activeDay()?.toISODate() === dayOfMonth.toISODate(),
+              'calendar-grid-cell-inactive':
+                dayOfMonth.month !== firstDayOfActiveMonth().month,
+              'calendar-grid-cell-past': dayOfMonth < today().startOf('day'),
+              'calendar-grid-cell-available': getAvailabilityStatus(dayOfMonth) === 'Available',
+              'calendar-grid-cell-unavailable': getAvailabilityStatus(dayOfMonth) === 'Fully Booked' || getAvailabilityStatus(dayOfMonth) === 'Unknown'
+            }"
+            (click)="onDateClick(dayOfMonth)"
+          >
+            <div class="calendar-cell-day-date">
+              <div class="calendar-cell-day">{{ dayOfMonth.toFormat('cccc') }}</div>
+              <div class="calendar-cell-date">{{ dayOfMonth.toFormat('d MMM yyyy') }}</div>
+            </div>
+            <div class="calendar-cell-day-status-availability">
+              <div class="calendar-cell-status">{{ getAvailabilityStatus(dayOfMonth) }}</div>
+              <div class="calendar-cell-availability">{{ getAvailabilityText(dayOfMonth) }}</div>
+            </div>
           </div>
-          <div class="calendar-cell-day-status-availability">
-            <div class="calendar-cell-status">{{ getAvailabilityStatus(dayOfMonth) }}</div>
-            <div class="calendar-cell-availability">{{ getAvailabilityText(dayOfMonth) }}</div>
-          </div>
-        </div>
+        } @else {
+          <div></div>
+        }
       }
     </div>
     <div class="support-section">
