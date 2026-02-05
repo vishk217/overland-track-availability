@@ -1,6 +1,6 @@
 <div class="calendar-container">
-    <p class="page-header">Overland Track Availability</p>
-    <p class="page-description">Booking availability of the Overland Track by month</p>
+    <h1 class="page-header">Overland Track Availability</h1>
+    <h2 class="page-description">Booking availability of the Overland Track by month</h2>
     @if (availabilityData()) {
       <p class="last-updated">Up to date as of {{ availabilityData()?.lastUpdated }}</p>
     }
@@ -53,7 +53,15 @@
       }
     </div>
     <div class="support-section">
-      <p>Found the availability that you were after?</p>
+      <h4>Found the availability that you were after?</h4>
       <a href="https://buymeacoffee.com/derrm024" target="_blank" class="coffee-link">☕ Buy me a coffee</a>
+    </div>
+    <div class="facebook-section">
+      <a href="https://www.facebook.com/groups/2042563289352427/" target="_blank" class="facebook-link">
+        <img src="assets/facebook.png" alt="Facebook" class="facebook-icon">
+      </a>
+      <a href="https://parks.tas.gov.au/explore-our-parks/cradle-mountain/overland-track" target="_blank" class="parks-link">
+        <img src="assets/tasparks.png" alt="Parks Tasmania" class="parks-icon">
+      </a>
     </div>
 </div>
