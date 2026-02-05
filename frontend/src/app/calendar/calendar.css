@@ -219,3 +219,28 @@
   background: #55437e;
   color: white;
 }
+
+.facebook-section {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+  padding: 15px;
+}
+
+.facebook-link, .parks-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.facebook-icon {
+  width: 80px;
+  height: 50px;
+}
+
+.parks-icon {
+  width: 50px;
+  height: 50px;
+}

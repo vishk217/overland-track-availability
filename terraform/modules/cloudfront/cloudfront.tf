@@ -24,6 +24,13 @@ resource "aws_cloudfront_distribution" "frontend" {
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
 
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.security_headers.id
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.redirect_www.arn
+    }
+
     forwarded_values {
       query_string = false
       headers      = ["CloudFront-Viewer-Country", "CloudFront-Viewer-Country-Name", "CloudFront-Viewer-Country-Region", "CloudFront-Viewer-City"]
@@ -65,4 +72,40 @@ resource "aws_cloudfront_distribution" "frontend" {
 
   wait_for_deployment = false
 
+}
+
+resource "aws_cloudfront_response_headers_policy" "security_headers" {
+  name = "security-headers-policy"
+
+  custom_headers_config {
+    items {
+      header   = "Content-Type"
+      value    = "text/html; charset=utf-8"
+      override = false
+    }
+  }
+}
+
+resource "aws_cloudfront_function" "redirect_www" {
+  name    = "redirect-www"
+  runtime = "cloudfront-js-1.0"
+  code    = <<EOF
+function handler(event) {
+    var request = event.request;
+    var host = request.headers.host.value;
+    
+    if (host.startsWith('www.')) {
+        var response = {
+            statusCode: 301,
+            statusDescription: 'Moved Permanently',
+            headers: {
+                'location': { value: 'https://' + host.substring(4) + request.uri }
+            }
+        };
+        return response;
+    }
+    
+    return request;
+}
+EOF
 }
