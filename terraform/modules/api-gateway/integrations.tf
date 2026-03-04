@@ -1,3 +1,5 @@
+data "aws_region" "current" {}
+
 resource "aws_api_gateway_integration" "auth_integration" {
   rest_api_id = aws_api_gateway_rest_api.overland_api.id
   resource_id = aws_api_gateway_resource.auth.id
@@ -5,7 +7,7 @@ resource "aws_api_gateway_integration" "auth_integration" {
 
   integration_http_method = "POST"
   type                   = "AWS_PROXY"
-  uri                    = var.auth_lambda_invoke_arn
+  uri                    = "arn:aws:apigateway:${data.aws_region.current.name}:lambda:path/2015-03-31/functions/${var.auth_lambda_invoke_arn}/invocations"
 }
 
 resource "aws_api_gateway_integration" "payment_session_integration" {
@@ -15,7 +17,7 @@ resource "aws_api_gateway_integration" "payment_session_integration" {
 
   integration_http_method = "POST"
   type                   = "AWS_PROXY"
-  uri                    = var.payment_lambda_invoke_arn
+  uri                    = "arn:aws:apigateway:${data.aws_region.current.name}:lambda:path/2015-03-31/functions/${var.payment_lambda_invoke_arn}/invocations"
 }
 
 resource "aws_api_gateway_integration" "payment_status_integration" {
@@ -25,7 +27,7 @@ resource "aws_api_gateway_integration" "payment_status_integration" {
 
   integration_http_method = "POST"
   type                   = "AWS_PROXY"
-  uri                    = var.payment_lambda_invoke_arn
+  uri                    = "arn:aws:apigateway:${data.aws_region.current.name}:lambda:path/2015-03-31/functions/${var.payment_lambda_invoke_arn}/invocations"
 }
 
 resource "aws_api_gateway_integration" "payment_events_integration" {
@@ -35,7 +37,7 @@ resource "aws_api_gateway_integration" "payment_events_integration" {
 
   integration_http_method = "POST"
   type                   = "AWS_PROXY"
-  uri                    = var.payment_lambda_invoke_arn
+  uri                    = "arn:aws:apigateway:${data.aws_region.current.name}:lambda:path/2015-03-31/functions/${var.payment_lambda_invoke_arn}/invocations"
 }
 
 resource "aws_api_gateway_integration" "notifications_get_integration" {
@@ -45,7 +47,7 @@ resource "aws_api_gateway_integration" "notifications_get_integration" {
 
   integration_http_method = "POST"
   type                   = "AWS_PROXY"
-  uri                    = var.notifications_lambda_invoke_arn
+  uri                    = "arn:aws:apigateway:${data.aws_region.current.name}:lambda:path/2015-03-31/functions/${var.notifications_lambda_invoke_arn}/invocations"
 }
 
 resource "aws_api_gateway_integration" "notifications_put_integration" {
@@ -55,7 +57,7 @@ resource "aws_api_gateway_integration" "notifications_put_integration" {
 
   integration_http_method = "POST"
   type                   = "AWS_PROXY"
-  uri                    = var.notifications_lambda_invoke_arn
+  uri                    = "arn:aws:apigateway:${data.aws_region.current.name}:lambda:path/2015-03-31/functions/${var.notifications_lambda_invoke_arn}/invocations"
 }
 
 resource "aws_lambda_permission" "auth_lambda_permission" {
