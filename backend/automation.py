@@ -69,8 +69,10 @@ class OverlandTrackAutomation:
                 context = browser.new_context(ignore_https_errors=True)
                 print("Context created successfully")
                 page = context.new_page()
+                print("Page created successfully")
                 page.set_default_timeout(10000)
                 page.goto("https://azapps.customlinc.com.au/tasparksoverland/BookingCat/Availability/?Category=OVERLAND", timeout=30000)
+                print("Navigated Successfully")
                 
                 dateToProcess = page.get_attribute("#datetimepicker-input", "value")
                 print(f"Today's Date: {dateToProcess}")
