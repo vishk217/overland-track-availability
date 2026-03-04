@@ -17,7 +17,7 @@ export interface CheckoutSessionResponse {
 })
 export class PaymentService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://your-api-gateway-url/prod';
+  private apiUrl = 'https://4tl8bevc11.execute-api.ap-southeast-2.amazonaws.com/prod';
 
   createCheckoutSession(): Observable<CheckoutSessionResponse> {
     return this.http.post<CheckoutSessionResponse>(`${this.apiUrl}/payment/session`, {});

@@ -16,7 +16,7 @@ export interface NotificationPreference {
 })
 export class NotificationService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://your-api-gateway-url/prod'; // #TODO
+  private apiUrl = 'https://4tl8bevc11.execute-api.ap-southeast-2.amazonaws.com/prod'; 
 
   getPreferences(): Observable<NotificationPreference[]> {
     return this.http.get<NotificationPreference[]>(`${this.apiUrl}/notifications`);
