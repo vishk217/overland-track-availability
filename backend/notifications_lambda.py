@@ -9,8 +9,8 @@ dynamodb = boto3.resource('dynamodb')
 secrets_client = boto3.client('secretsmanager')
 
 def get_jwt_secret():
-    secret = secrets_client.get_secret_value(SecretId=os.environ['JWT_SECRET_ARN'])
-    return json.loads(secret['SecretString'])['secret']
+    secret = secrets_client.get_secret_value(SecretId=os.environ['APP_SECRETS_ARN'])
+    return json.loads(secret['SecretString'])['jwt_secret']
 
 def get_user_from_token(event):
     auth_header = event.get('headers', {}).get('Authorization', '')

@@ -40,26 +40,3 @@ variable "certificate_arn" {
   default     = "arn:aws:acm:us-east-1:842556421867:certificate/de4ba38a-86fe-4032-b187-a927532e6e51"
 }
 
-variable "stripe_publishable_key" {
-  description = "Stripe publishable key"
-  type        = string
-  sensitive   = true
-}
-
-variable "stripe_secret_key" {
-  description = "Stripe secret key"
-  type        = string
-  sensitive   = true
-}
-
-variable "stripe_webhook_secret" {
-  description = "Stripe webhook secret"
-  type        = string
-  sensitive   = true
-}
-
-variable "jwt_secret" {
-  description = "JWT signing secret"
-  type        = string
-  sensitive   = true
-}

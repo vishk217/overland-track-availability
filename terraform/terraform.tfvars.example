@@ -1,7 +1,6 @@
 # Copy this file to terraform.tfvars and fill in your values
 
 # Stripe Configuration
-stripe_publishable_key = "pk_test_your_publishable_key_here"
 stripe_secret_key      = "sk_test_your_secret_key_here"
 stripe_webhook_secret  = "whsec_your_webhook_secret_here"
 
