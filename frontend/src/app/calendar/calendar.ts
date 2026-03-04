@@ -12,6 +12,8 @@ import {
 import { DateTime, Info, Interval } from 'luxon';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 interface AvailabilityData {
   lastUpdated: string;
@@ -27,6 +29,8 @@ interface AvailabilityData {
 })
 export class CalendarComponent implements OnInit {
   private http = inject(HttpClient);
+  private router = inject(Router);
+  private authService = inject(AuthService);
   today: Signal<DateTime> = signal(DateTime.local());
   firstDayOfActiveMonth: WritableSignal<DateTime> = signal(
     this.today().startOf('month'),
@@ -107,6 +111,18 @@ export class CalendarComponent implements OnInit {
       window.open('https://azapps.customlinc.com.au/tasparksoverland/BookingCat/Availability/?Category=OVERLAND', '_blank');
     } else {
       this.activeDay.set(date);
+    }
+  }
+
+  onSignUpClick(): void {
+    this.router.navigate(['/register']);
+  }
+
+  onLoginClick(): void {
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.router.navigate(['/login']);
     }
   }
 }

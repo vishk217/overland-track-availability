@@ -1,0 +1,98 @@
+import json
+import boto3
+import uuid
+import jwt
+import os
+from datetime import datetime
+
+dynamodb = boto3.resource('dynamodb')
+secrets_client = boto3.client('secretsmanager')
+
+def get_jwt_secret():
+    secret = secrets_client.get_secret_value(SecretId=os.environ['JWT_SECRET_ARN'])
+    return json.loads(secret['SecretString'])['secret']
+
+def get_user_from_token(event):
+    auth_header = event.get('headers', {}).get('Authorization', '')
+    if not auth_header.startswith('Bearer '):
+        raise Exception('No valid token')
+    
+    token = auth_header.split(' ')[1]
+    try:
+        # JWT library automatically checks expiration here
+        payload = jwt.decode(token, get_jwt_secret(), algorithms=['HS256'])
+        return payload['user_id']
+    except jwt.ExpiredSignatureError:
+        raise Exception('Token expired')
+    except jwt.InvalidTokenError:
+        raise Exception('Invalid token')
+
+def lambda_handler(event, context):
+    try:
+        user_id = get_user_from_token(event)
+        method = event['httpMethod']
+        path = event['path']
+        
+        notifications_table = dynamodb.Table(os.environ['NOTIFICATIONS_TABLE'])
+        
+        if path == '/notifications' and method == 'GET':
+            # Get user's notification preferences
+            response = notifications_table.query(
+                KeyConditionExpression='user_id = :user_id',
+                ExpressionAttributeValues={':user_id': user_id}
+            )
+            
+            return {
+                'statusCode': 200,
+                'body': json.dumps(response['Items'])
+            }
+            
+        elif path == '/notifications' and method == 'PUT':
+            # Save notification preference
+            body = json.loads(event['body'])
+            notification_id = str(uuid.uuid4())
+            
+            item = {
+                'user_id': user_id,
+                'notification_id': notification_id,
+                'dates': body['dates'],
+                'quantity': body['quantity'],
+                'contact_method': body['contact_method'],
+                'contact_value': body['contact_value'],
+                'active': body.get('active', True),
+                'created_at': datetime.utcnow().isoformat()
+            }
+            
+            notifications_table.put_item(Item=item)
+            
+            return {
+                'statusCode': 201,
+                'body': json.dumps(item)
+            }
+            
+        elif path.startswith('/notifications/') and method == 'DELETE':
+            # Delete notification preference
+            notification_id = path.split('/')[-1]
+            
+            notifications_table.delete_item(
+                Key={
+                    'user_id': user_id,
+                    'notification_id': notification_id
+                }
+            )
+            
+            return {
+                'statusCode': 204,
+                'body': ''
+            }
+        
+        return {
+            'statusCode': 404,
+            'body': json.dumps({'error': 'Not found'})
+        }
+        
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': json.dumps({'error': str(e)})
+        }

@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
-import { CalendarComponent } from './calendar/calendar';
+import { RouterOutlet, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CalendarComponent],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  imports: [RouterOutlet, RouterModule, CommonModule],
+  template: `
+    <router-outlet></router-outlet>
+  `,
+  styles: []
 })
 export class AppComponent {
   title = 'overland-track-availability';
