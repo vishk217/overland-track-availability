@@ -310,7 +310,7 @@ export class DashboardComponent implements OnInit {
   preferences = signal<NotificationPreference[]>([]);
   showSuccessMessage = signal(false);
   loading = false;
-  billingUrl = (globalThis as any).process?.env?.['STRIPE_BILLING_URL'] || 'https://billing.stripe.com/p/login/YOUR_PORTAL_ID';
+  billingUrl = (globalThis as any).process?.env?.['STRIPE_BILLING_URL'] || 'https://billing.stripe.com/p/login/test_aFa4gy5Wn2hW0358s26c000';
 
   ngOnInit(): void {
     this.user.set(this.authService.getCurrentUser());

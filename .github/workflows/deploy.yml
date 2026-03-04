@@ -61,3 +61,10 @@ jobs:
     - name: Upload Frontend to S3
       run: |
         aws s3 sync frontend/dist/browser/ s3://overland-track-frontend --delete
+    
+    - name: Invalidate CloudFront Cache
+      run: |
+        DISTRIBUTION_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?Origins.Items[0].Id=='S3-overland-track-frontend'].Id" --output text)
+        if [ -n "$DISTRIBUTION_ID" ]; then
+          aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths "/*"
+        fi
