@@ -43,13 +43,8 @@ variable "notification_history_table_arn" {
   type        = string
 }
 
-variable "stripe_keys_arn" {
-  description = "Secrets Manager ARN for Stripe keys"
-  type        = string
-}
-
-variable "jwt_secret_arn" {
-  description = "Secrets Manager ARN for JWT secret"
+variable "app_secrets_arn" {
+  description = "Secrets Manager ARN for application secrets"
   type        = string
 }
 

@@ -11,12 +11,12 @@ dynamodb = boto3.resource('dynamodb')
 secrets_client = boto3.client('secretsmanager')
 
 def get_stripe_keys():
-    secret = secrets_client.get_secret_value(SecretId=os.environ['STRIPE_KEYS_ARN'])
+    secret = secrets_client.get_secret_value(SecretId=os.environ['APP_SECRETS_ARN'])
     return json.loads(secret['SecretString'])
 
 def get_jwt_secret():
-    secret = secrets_client.get_secret_value(SecretId=os.environ['JWT_SECRET_ARN'])
-    return json.loads(secret['SecretString'])['secret']
+    secret = secrets_client.get_secret_value(SecretId=os.environ['APP_SECRETS_ARN'])
+    return json.loads(secret['SecretString'])['jwt_secret']
 
 def get_user_from_token(event):
     auth_header = event.get('headers', {}).get('Authorization', '')
@@ -101,7 +101,7 @@ def handle_webhook_event(event_type, data):
 def lambda_handler(event, context):
     try:
         stripe_keys = get_stripe_keys()
-        stripe.api_key = stripe_keys['secret_key']
+        stripe.api_key = stripe_keys['stripe_secret_key']
         
         method = event['httpMethod']
         path = event['path']
@@ -113,7 +113,7 @@ def lambda_handler(event, context):
             payload = event['body']
             signature = event['headers'].get('stripe-signature', '')
             
-            if not verify_webhook_signature(payload, signature, stripe_keys['webhook_secret']):
+            if not verify_webhook_signature(payload, signature, stripe_keys['stripe_webhook_secret']):
                 return {'statusCode': 400, 'body': 'Invalid signature'}
             
             webhook_event = json.loads(payload)
@@ -138,7 +138,7 @@ def lambda_handler(event, context):
                     customer_email=user_email,
                     payment_method_types=['card'],
                     line_items=[{
-                        'price': 'prod_U5Nhd3uSe7cWvo', #TODO
+                        'price': stripe_keys['stripe_price_id'],
                         'quantity': 1,
                     }],
                     mode='subscription',

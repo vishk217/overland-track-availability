@@ -13,7 +13,7 @@ resource "aws_lambda_function" "auth_lambda" {
   environment {
     variables = {
       USERS_TABLE = var.users_table_name
-      JWT_SECRET_ARN = var.jwt_secret_arn
+      APP_SECRETS_ARN = var.app_secrets_arn
     }
   }
 }
@@ -34,7 +34,7 @@ resource "aws_lambda_function" "payment_lambda" {
     variables = {
       USERS_TABLE = var.users_table_name
       SUBSCRIPTIONS_TABLE = var.subscriptions_table_name
-      STRIPE_KEYS_ARN = var.stripe_keys_arn
+      APP_SECRETS_ARN = var.app_secrets_arn
       FRONTEND_URL = var.frontend_url
     }
   }
@@ -55,7 +55,7 @@ resource "aws_lambda_function" "notifications_lambda" {
   environment {
     variables = {
       NOTIFICATIONS_TABLE = var.notifications_table_name
-      JWT_SECRET_ARN = var.jwt_secret_arn
+      APP_SECRETS_ARN = var.app_secrets_arn
     }
   }
 }
@@ -141,8 +141,7 @@ resource "aws_iam_role_policy" "lambda_policy" {
           "secretsmanager:GetSecretValue"
         ]
         Resource = [
-          var.stripe_keys_arn,
-          var.jwt_secret_arn
+          var.app_secrets_arn
         ]
       },
       {

@@ -10,8 +10,8 @@ dynamodb = boto3.resource('dynamodb')
 secrets_client = boto3.client('secretsmanager')
 
 def get_jwt_secret():
-    secret = secrets_client.get_secret_value(SecretId=os.environ['JWT_SECRET_ARN'])
-    return json.loads(secret['SecretString'])['secret']
+    secret = secrets_client.get_secret_value(SecretId=os.environ['APP_SECRETS_ARN'])
+    return json.loads(secret['SecretString'])['jwt_secret']
 
 def hash_password(password):
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
@@ -23,7 +23,7 @@ def generate_token(user_id, email):
     payload = {
         'user_id': user_id,
         'email': email,
-        'exp': datetime.utcnow() + timedelta(days=7)
+        'exp': datetime.utcnow() + timedelta(days=2)
     }
     return jwt.encode(payload, get_jwt_secret(), algorithm='HS256')
 

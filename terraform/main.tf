@@ -43,10 +43,6 @@ module "dynamodb" {
 
 module "secrets" {
   source = "./modules/secrets"
-  stripe_publishable_key = var.stripe_publishable_key
-  stripe_secret_key      = var.stripe_secret_key
-  stripe_webhook_secret  = var.stripe_webhook_secret
-  jwt_secret            = var.jwt_secret
 }
 
 module "lambda_notifications" {
@@ -60,8 +56,7 @@ module "lambda_notifications" {
   notifications_table_arn = module.dynamodb.notifications_table_arn
   notification_history_table_name = module.dynamodb.notification_history_table_name
   notification_history_table_arn = module.dynamodb.notification_history_table_arn
-  stripe_keys_arn = module.secrets.stripe_keys_arn
-  jwt_secret_arn = module.secrets.jwt_secret_arn
+  app_secrets_arn = module.secrets.app_secrets_arn
   email_topic_arn = module.sns.email_topic_arn
   sms_topic_arn = module.sns.sms_topic_arn
   s3_bucket_arn = module.s3.bucket_arn
