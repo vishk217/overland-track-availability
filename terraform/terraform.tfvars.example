@@ -1,0 +1,16 @@
+# Copy this file to terraform.tfvars and fill in your values
+
+# Stripe Configuration
+stripe_publishable_key = "pk_test_your_publishable_key_here"
+stripe_secret_key      = "sk_test_your_secret_key_here"
+stripe_webhook_secret  = "whsec_your_webhook_secret_here"
+
+# JWT Configuration
+jwt_secret = "your_jwt_secret_here_minimum_32_characters"
+
+# Optional overrides (defaults are provided)
+# aws_region = "ap-southeast-2"
+# s3_bucket_name = "overland-track-data"
+# frontend_bucket_name = "overland-track-frontend"
+# lambda_function_name = "overland-track-automation"
+# image_tag = "latest"

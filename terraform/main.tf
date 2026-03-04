@@ -37,14 +37,60 @@ module "ecr" {
   repository_name = "overland-track-lambda"
 }
 
-module "lambda" {
-  source               = "./modules/lambda"
-  function_name        = var.lambda_function_name
-  image_uri           = "${module.ecr.repository_url}:${var.image_tag}"
-  s3_bucket_arn        = module.s3.bucket_arn
-  schedule_expression  = "rate(5 minutes)"
+module "dynamodb" {
+  source = "./modules/dynamodb"
+}
+
+module "secrets" {
+  source = "./modules/secrets"
+  stripe_publishable_key = var.stripe_publishable_key
+  stripe_secret_key      = var.stripe_secret_key
+  stripe_webhook_secret  = var.stripe_webhook_secret
+  jwt_secret            = var.jwt_secret
+}
+
+module "lambda_notifications" {
+  source = "./modules/lambda-notifications"
+  function_name = var.lambda_function_name
+  users_table_name = module.dynamodb.users_table_name
+  users_table_arn = module.dynamodb.users_table_arn
+  subscriptions_table_name = module.dynamodb.subscriptions_table_name
+  subscriptions_table_arn = module.dynamodb.subscriptions_table_arn
+  notifications_table_name = module.dynamodb.notifications_table_name
+  notifications_table_arn = module.dynamodb.notifications_table_arn
+  notification_history_table_name = module.dynamodb.notification_history_table_name
+  notification_history_table_arn = module.dynamodb.notification_history_table_arn
+  stripe_keys_arn = module.secrets.stripe_keys_arn
+  jwt_secret_arn = module.secrets.jwt_secret_arn
+  email_topic_arn = module.sns.email_topic_arn
+  sms_topic_arn = module.sns.sms_topic_arn
+  s3_bucket_arn = module.s3.bucket_arn
+  notification_service_image_uri = "${module.ecr.repository_url}:${var.image_tag}"
+  frontend_url = "https://${var.domain_name[0]}"
   environment_variables = {
     S3_BUCKET = module.s3.bucket_name
     TZ = "Australia/Sydney"
   }
+}
+
+module "sns" {
+  source = "./modules/sns"
+  notification_lambda_arn = module.lambda_notifications.notification_service_arn
+}
+
+module "monitoring" {
+  source = "./modules/monitoring"
+  email_topic_name    = module.sns.email_topic_name
+  sms_topic_name      = module.sns.sms_topic_name
+  sns_log_group_name  = module.sns.sns_log_group_name
+}
+
+module "api_gateway" {
+  source = "./modules/api-gateway"
+  auth_lambda_invoke_arn = module.lambda_notifications.auth_lambda_arn
+  payment_lambda_invoke_arn = module.lambda_notifications.payment_lambda_arn
+  notifications_lambda_invoke_arn = module.lambda_notifications.notifications_lambda_arn
+  auth_lambda_function_name = "${var.lambda_function_name}-auth"
+  payment_lambda_function_name = "${var.lambda_function_name}-payment"
+  notifications_lambda_function_name = "${var.lambda_function_name}-notifications"
 }
