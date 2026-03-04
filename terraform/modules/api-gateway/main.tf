@@ -92,7 +92,13 @@ resource "aws_api_gateway_deployment" "overland_api_deployment" {
     aws_api_gateway_method.payment_status_get,
     aws_api_gateway_method.payment_events_post,
     aws_api_gateway_method.notifications_get,
-    aws_api_gateway_method.notifications_put
+    aws_api_gateway_method.notifications_put,
+    aws_api_gateway_integration.auth_integration,
+    aws_api_gateway_integration.payment_session_integration,
+    aws_api_gateway_integration.payment_status_integration,
+    aws_api_gateway_integration.payment_events_integration,
+    aws_api_gateway_integration.notifications_get_integration,
+    aws_api_gateway_integration.notifications_put_integration
   ]
 
   rest_api_id = aws_api_gateway_rest_api.overland_api.id
