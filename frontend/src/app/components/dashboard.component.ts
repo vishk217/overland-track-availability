@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService, User } from '../services/auth.service';
-import { PaymentService, SubscriptionResponse } from '../services/payment.service';
+import { PaymentService, SubscriptionStatus } from '../services/payment.service';
 import { NotificationService, NotificationPreference } from '../services/notification.service';
 
 @Component({
@@ -13,7 +13,12 @@ import { NotificationService, NotificationPreference } from '../services/notific
     <div class="dashboard">
       <p><a routerLink="/">← Back to Calendar</a></p>
       <header>
-        <h1>Alert Dashboard</h1>
+        <div>
+          <h1>Alert Dashboard</h1>
+          @if (user()) {
+            <p class="signed-in-text">Signed in as {{ user()?.email }}</p>
+          }
+        </div>
         <button (click)="logout()">Logout</button>
       </header>
       
@@ -104,6 +109,11 @@ import { NotificationService, NotificationPreference } from '../services/notific
       color: #55437e;
       font-size: 2rem;
       font-weight: 700;
+      margin: 0 0 0.5rem 0;
+    }
+    .signed-in-text {
+      color: #6c757d;
+      font-size: 0.9rem;
       margin: 0;
     }
     header button {
@@ -306,7 +316,7 @@ export class DashboardComponent implements OnInit {
   private route = inject(ActivatedRoute);
 
   user = signal<User | null>(null);
-  subscription = signal<SubscriptionResponse | null>(null);
+  subscription = signal<SubscriptionStatus | null>(null);
   preferences = signal<NotificationPreference[]>([]);
   showSuccessMessage = signal(false);
   loading = false;
