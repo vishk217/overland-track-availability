@@ -39,12 +39,28 @@ def get_user_email(user_id):
     return response['Item']['email'] if 'Item' in response else None
 
 def verify_webhook_signature(payload, signature, webhook_secret):
+    print(f"Verifying webhook signature...")
+    print(f"Payload length: {len(payload) if payload else 'None'}")
+    print(f"Signature: {signature}")
+    print(f"Webhook secret exists: {bool(webhook_secret)}")
+    
+    if not payload or not signature or not webhook_secret:
+        print("Missing payload, signature, or webhook secret")
+        return False
+    
     expected_signature = hmac.new(
         webhook_secret.encode(),
         payload.encode(),
         hashlib.sha256
     ).hexdigest()
-    return hmac.compare_digest(f"sha256={expected_signature}", signature)
+    
+    expected_full = f"sha256={expected_signature}"
+    print(f"Expected signature: {expected_full}")
+    print(f"Received signature: {signature}")
+    
+    result = hmac.compare_digest(expected_full, signature)
+    print(f"Signature verification result: {result}")
+    return result
 
 def handle_webhook_event(event_type, data):
     users_table = dynamodb.Table(os.environ['USERS_TABLE'])
