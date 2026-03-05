@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -23,8 +23,8 @@ import { AuthService } from '../services/auth.service';
         <div class="form-group">
           <input type="password" formControlName="confirmPassword" placeholder="Confirm Password" required>
         </div>
-        <button type="submit" [disabled]="registerForm.invalid || loading">
-          {{ loading ? 'Creating Account...' : 'Register' }}
+        <button type="submit" [disabled]="registerForm.invalid || loading()">
+          {{ loading() ? 'Creating Account...' : 'Register' }}
         </button>
         @if (error) {
           <p class="error">{{ error }}</p>
@@ -143,7 +143,7 @@ export class RegisterComponent {
     confirmPassword: ['', Validators.required]
   });
 
-  loading = false;
+  loading = signal(false);
   error = '';
 
   constructor() {
@@ -163,17 +163,17 @@ export class RegisterComponent {
         return;
       }
 
-      this.loading = true;
+      this.loading.set(true);
       this.error = '';
       
       this.authService.register(email, password).subscribe({
         next: () => {
-          this.loading = false;
+          this.loading.set(false);
           this.router.navigate(['/dashboard']);
         },
         error: (err) => {
           this.error = err.error?.error || 'Registration failed. Please try again.';
-          this.loading = false;
+          this.loading.set(false);
         }
       });
     }
