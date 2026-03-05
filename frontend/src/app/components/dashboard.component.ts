@@ -368,13 +368,23 @@ export class DashboardComponent implements OnInit {
 
   activateSubscription(): void {
     this.loading = true;
+    console.log('Starting checkout session creation...');
     this.paymentService.createCheckoutSession().subscribe({
       next: (response) => {
-        window.location.href = response.checkout_url;
+        console.log('Checkout session response:', response);
+        if (response.checkout_url) {
+          window.location.href = response.checkout_url;
+        } else {
+          console.error('No checkout URL in response');
+          this.loading = false;
+        }
       },
       error: (err) => {
         console.error('Checkout failed:', err);
         this.loading = false;
+      },
+      complete: () => {
+        console.log('Checkout session request completed');
       }
     });
   }

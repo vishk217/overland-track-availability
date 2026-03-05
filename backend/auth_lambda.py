@@ -28,6 +28,9 @@ def generate_token(user_id, email):
     return jwt.encode(payload, get_jwt_secret(), algorithm='HS256')
 
 def lambda_handler(event, context):
+    print(f"Auth Lambda - Full event: {json.dumps(event)}")
+    print(f"Auth Lambda - Method: {event.get('httpMethod')}, Path: {event.get('path')}")
+    
     cors_headers = {
         'Access-Control-Allow-Origin': 'https://overlandtrackavailability.com',
         'Access-Control-Allow-Headers': 'Content-Type,Authorization',
@@ -38,12 +41,15 @@ def lambda_handler(event, context):
         body = json.loads(event['body'])
         path = event['path']
         method = event['httpMethod']
+        print(f"Request body keys: {list(body.keys())}")
         
         users_table = dynamodb.Table(os.environ['USERS_TABLE'])
         
         if path == '/auth' and method == 'POST':
+            print("Processing login request")
             # Login
             email = body['email']
+            print(f"Login attempt for email: {email}")
             
             response = users_table.query(
                 IndexName='email-index',
@@ -75,8 +81,10 @@ def lambda_handler(event, context):
             }
             
         elif path == '/auth/register' and method == 'POST':
+            print("Processing registration request")
             # Register
             email = body['email']
+            print(f"Registration attempt for email: {email}")
             password = hash_password(body['password'])
             user_id = str(uuid.uuid4())
             
@@ -125,6 +133,7 @@ def lambda_handler(event, context):
         }
         
     except Exception as e:
+        print(f"Auth Lambda error: {str(e)}")
         return {
             'statusCode': 500,
             'headers': cors_headers,

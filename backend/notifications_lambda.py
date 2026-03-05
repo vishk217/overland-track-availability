@@ -28,6 +28,9 @@ def get_user_from_token(event):
         raise Exception('Invalid token')
 
 def lambda_handler(event, context):
+    print(f"Notifications Lambda - Full event: {json.dumps(event)}")
+    print(f"Notifications Lambda - Method: {event.get('httpMethod')}, Path: {event.get('path')}")
+    
     cors_headers = {
         'Access-Control-Allow-Origin': 'https://overlandtrackavailability.com',
         'Access-Control-Allow-Headers': 'Content-Type,Authorization',
@@ -35,18 +38,22 @@ def lambda_handler(event, context):
     }
     
     try:
+        print("Authenticating user...")
         user_id = get_user_from_token(event)
+        print(f"User authenticated: {user_id}")
         method = event['httpMethod']
         path = event['path']
         
         notifications_table = dynamodb.Table(os.environ['NOTIFICATIONS_TABLE'])
         
         if path == '/notifications' and method == 'GET':
+            print("Getting user notifications")
             # Get user's notification preferences
             response = notifications_table.query(
                 KeyConditionExpression='user_id = :user_id',
                 ExpressionAttributeValues={':user_id': user_id}
             )
+            print(f"Found {len(response['Items'])} notifications")
             
             return {
                 'statusCode': 200,
@@ -55,8 +62,10 @@ def lambda_handler(event, context):
             }
             
         elif path == '/notifications' and method == 'PUT':
+            print("Creating new notification")
             # Save notification preference
             body = json.loads(event['body'])
+            print(f"Notification data: {body}")
             notification_id = str(uuid.uuid4())
             
             item = {
@@ -79,8 +88,10 @@ def lambda_handler(event, context):
             }
             
         elif path.startswith('/notifications/') and method == 'DELETE':
+            print("Deleting notification")
             # Delete notification preference
             notification_id = path.split('/')[-1]
+            print(f"Deleting notification ID: {notification_id}")
             
             notifications_table.delete_item(
                 Key={
@@ -102,6 +113,7 @@ def lambda_handler(event, context):
         }
         
     except Exception as e:
+        print(f"Notifications Lambda error: {str(e)}")
         return {
             'statusCode': 500,
             'headers': cors_headers,
