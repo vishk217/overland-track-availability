@@ -182,6 +182,39 @@ resource "aws_api_gateway_deployment" "overland_api_deployment" {
   ]
 
   rest_api_id = aws_api_gateway_rest_api.overland_api.id
+  
+  triggers = {
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_resource.auth.id,
+      aws_api_gateway_resource.auth_register.id,
+      aws_api_gateway_resource.payment.id,
+      aws_api_gateway_resource.payment_session.id,
+      aws_api_gateway_resource.payment_status.id,
+      aws_api_gateway_resource.payment_events.id,
+      aws_api_gateway_resource.notifications.id,
+      aws_api_gateway_resource.notifications_id.id,
+      aws_api_gateway_method.auth_post.id,
+      aws_api_gateway_method.auth_register_post.id,
+      aws_api_gateway_method.payment_session_post.id,
+      aws_api_gateway_method.payment_status_get.id,
+      aws_api_gateway_method.payment_events_post.id,
+      aws_api_gateway_method.notifications_get.id,
+      aws_api_gateway_method.notifications_put.id,
+      aws_api_gateway_method.notifications_delete.id,
+      aws_api_gateway_integration.auth_integration.id,
+      aws_api_gateway_integration.auth_register_integration.id,
+      aws_api_gateway_integration.payment_session_integration.id,
+      aws_api_gateway_integration.payment_status_integration.id,
+      aws_api_gateway_integration.payment_events_integration.id,
+      aws_api_gateway_integration.notifications_get_integration.id,
+      aws_api_gateway_integration.notifications_put_integration.id,
+      aws_api_gateway_integration.notifications_delete_integration.id,
+    ]))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_api_gateway_stage" "overland_api_stage" {
