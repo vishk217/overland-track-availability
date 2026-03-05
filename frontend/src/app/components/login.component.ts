@@ -151,10 +151,11 @@ export class LoginComponent {
       const { email, password } = this.loginForm.value;
       this.authService.login(email, password).subscribe({
         next: () => {
+          this.loading = false;
           this.router.navigate(['/dashboard']);
         },
         error: (err) => {
-          this.error = 'Login failed. Please check your credentials.';
+          this.error = err.error?.error || 'Login failed. Please check your credentials.';
           this.loading = false;
         }
       });

@@ -168,10 +168,11 @@ export class RegisterComponent {
       
       this.authService.register(email, password).subscribe({
         next: () => {
+          this.loading = false;
           this.router.navigate(['/dashboard']);
         },
         error: (err) => {
-          this.error = 'Registration failed. Please try again.';
+          this.error = err.error?.error || 'Registration failed. Please try again.';
           this.loading = false;
         }
       });
