@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -19,8 +19,8 @@ import { AuthService } from '../services/auth.service';
         <div class="form-group">
           <input type="password" formControlName="password" placeholder="Password" required>
         </div>
-        <button type="submit" [disabled]="loginForm.invalid || loading">
-          {{ loading ? 'Logging in...' : 'Login' }}
+        <button type="submit" [disabled]="loginForm.invalid || loading()">
+          {{ loading() ? 'Logging in...' : 'Login' }}
         </button>
         @if (error) {
           <p class="error">{{ error }}</p>
@@ -132,7 +132,7 @@ export class LoginComponent {
     password: ['', Validators.required]
   });
 
-  loading = false;
+  loading = signal(false);
   error = '';
 
   constructor() {
@@ -145,18 +145,18 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      this.loading = true;
+      this.loading.set(true);
       this.error = '';
       
       const { email, password } = this.loginForm.value;
       this.authService.login(email, password).subscribe({
         next: () => {
-          this.loading = false;
+          this.loading.set(false);
           this.router.navigate(['/dashboard']);
         },
         error: (err) => {
           this.error = err.error?.error || 'Login failed. Please check your credentials.';
-          this.loading = false;
+          this.loading.set(false);
         }
       });
     }

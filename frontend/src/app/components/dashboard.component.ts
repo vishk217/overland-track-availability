@@ -46,8 +46,8 @@ import { NotificationService, NotificationPreference } from '../services/notific
         } @else {
           <div class="subscription-info">
             <p class="subscription-text">A subscription is required to receive real-time availability notifications via email and SMS.</p>
-            <button (click)="activateSubscription()" [disabled]="loading" class="nav-button activate-btn">
-              {{ loading ? 'Processing...' : 'Activate my subscription' }}
+            <button (click)="activateSubscription()" [disabled]="loading()" class="nav-button activate-btn">
+              {{ loading() ? 'Processing...' : 'Activate my subscription' }}
             </button>
           </div>
         }
@@ -319,7 +319,7 @@ export class DashboardComponent implements OnInit {
   subscription = signal<SubscriptionStatus | null>(null);
   preferences = signal<NotificationPreference[]>([]);
   showSuccessMessage = signal(false);
-  loading = false;
+  loading = signal(false);
   billingUrl = (globalThis as any).process?.env?.['STRIPE_BILLING_URL'] || 'https://billing.stripe.com/p/login/test_aFa4gy5Wn2hW0358s26c000'; // #TODO
 
   ngOnInit(): void {
@@ -367,7 +367,7 @@ export class DashboardComponent implements OnInit {
   }
 
   activateSubscription(): void {
-    this.loading = true;
+    this.loading.set(true);
     console.log('Starting checkout session creation...');
     this.paymentService.createCheckoutSession().subscribe({
       next: (response) => {
@@ -376,12 +376,12 @@ export class DashboardComponent implements OnInit {
           window.location.href = response.checkout_url;
         } else {
           console.error('No checkout URL in response');
-          this.loading = false;
+          this.loading.set(false);
         }
       },
       error: (err) => {
         console.error('Checkout failed:', err);
-        this.loading = false;
+        this.loading.set(false);
       },
       complete: () => {
         console.log('Checkout session request completed');

@@ -47,8 +47,8 @@ import { NotificationService, NotificationPreference } from '../services/notific
                  [placeholder]="notificationForm.get('contact_method')?.value === 'email' ? 'your@email.com' : '+61400000000'">
         </div>
         
-        <button type="submit" [disabled]="notificationForm.invalid || loading">
-          {{ loading ? 'Creating...' : 'Create Alert' }}
+        <button type="submit" [disabled]="notificationForm.invalid || loading()">
+          {{ loading() ? 'Creating...' : 'Create Alert' }}
         </button>
         
         @if (dateRangeError) {
@@ -185,12 +185,12 @@ export class NotificationsComponent {
     active: [true]
   });
 
-  loading = false;
+  loading = signal(false);
   dateRangeError = '';
 
   onSubmit(): void {
     if (this.notificationForm.valid) {
-      this.loading = true;
+      this.loading.set(true);
       this.dateRangeError = '';
       
       const formValue = this.notificationForm.value;
@@ -201,7 +201,7 @@ export class NotificationsComponent {
       
       if (startDate > endDate) {
         this.dateRangeError = 'Start date must be before or equal to end date.';
-        this.loading = false;
+        this.loading.set(false);
         return;
       }
       
@@ -217,7 +217,7 @@ export class NotificationsComponent {
       
       if (dates.length === 0) {
         this.dateRangeError = 'Please select a valid date range.';
-        this.loading = false;
+        this.loading.set(false);
         return;
       }
       
@@ -232,12 +232,12 @@ export class NotificationsComponent {
       this.notificationService.savePreference(preference).subscribe({
         next: () => {
           this.notificationForm.reset();
-          this.loading = false;
+          this.loading.set(false);
           this.router.navigate(['/dashboard']);
         },
         error: (err) => {
           console.error('Failed to save preference:', err);
-          this.loading = false;
+          this.loading.set(false);
         }
       });
     }
