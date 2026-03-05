@@ -154,8 +154,10 @@ def lambda_handler(event, context):
         
         if path == '/payment/events' and method == 'POST':
             # Handle Stripe webhook
+            print(f"Webhook headers: {event.get('headers', {})}")
             payload = event['body']
-            signature = event['headers'].get('stripe-signature', '')
+            signature = event['headers'].get('stripe-signature', '') or event['headers'].get('Stripe-Signature', '')
+            print(f"Found signature: {signature}")
             
             if not verify_webhook_signature(payload, signature, stripe_keys['stripe_webhook_secret']):
                 return {'statusCode': 400, 'headers': cors_headers, 'body': 'Invalid signature'}
