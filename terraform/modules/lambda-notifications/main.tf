@@ -66,7 +66,8 @@ resource "aws_lambda_function" "notification_service" {
   
   package_type = "Image"
   image_uri    = var.notification_service_image_uri
-  timeout      = 300
+  timeout      = 60
+  memory_size  = 1024
   
   image_config {
     command = ["notification_service.lambda_handler"]
