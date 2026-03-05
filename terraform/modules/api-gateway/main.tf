@@ -209,6 +209,7 @@ resource "aws_api_gateway_deployment" "overland_api_deployment" {
       aws_api_gateway_integration.notifications_get_integration.id,
       aws_api_gateway_integration.notifications_put_integration.id,
       aws_api_gateway_integration.notifications_delete_integration.id,
+      "auth_change_v2",
     ]))
   }
 
