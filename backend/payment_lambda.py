@@ -99,6 +99,9 @@ def handle_webhook_event(event_type, data):
                 )
 
 def lambda_handler(event, context):
+    print(f"Payment Lambda - Full event: {json.dumps(event)}")
+    print(f"Payment Lambda - Method: {event.get('httpMethod')}, Path: {event.get('path')}")
+    
     cors_headers = {
         'Access-Control-Allow-Origin': 'https://overlandtrackavailability.com',
         'Access-Control-Allow-Headers': 'Content-Type,Authorization',
@@ -106,9 +109,12 @@ def lambda_handler(event, context):
     }
     
     try:
+        print("Getting Stripe keys...")
         stripe_keys = get_stripe_keys()
+        print(f"Stripe keys loaded: {list(stripe_keys.keys())}")
         
         if not stripe_keys.get('stripe_secret_key'):
+            print("ERROR: Stripe secret key not found")
             return {
                 'statusCode': 500,
                 'headers': cors_headers,
@@ -116,6 +122,7 @@ def lambda_handler(event, context):
             }
             
         stripe.api_key = stripe_keys['stripe_secret_key']
+        print("Stripe API key set successfully")
         
         method = event['httpMethod']
         path = event['path']
@@ -136,19 +143,25 @@ def lambda_handler(event, context):
             return {'statusCode': 200, 'headers': cors_headers, 'body': 'OK'}
         
         # All other endpoints require authentication
+        print("Authenticating user...")
         user_id = get_user_from_token(event)
+        print(f"User authenticated: {user_id}")
         
         if path == '/payment/session' and method == 'POST':
+            print("Creating Stripe checkout session...")
             # Create Stripe checkout session
             try:
                 user_email = get_user_email(user_id)
+                print(f"User email: {user_email}")
                 if not user_email:
+                    print("ERROR: User email not found")
                     return {
                         'statusCode': 400,
                         'headers': cors_headers,
                         'body': json.dumps({'error': 'User email not found'})
                     }
                 
+                print("Creating Stripe session...")
                 session = stripe.checkout.Session.create(
                     customer_email=user_email,
                     payment_method_types=['card'],
@@ -165,6 +178,7 @@ def lambda_handler(event, context):
                         }
                     }
                 )
+                print(f"Stripe session created: {session.id}")
                 
                 return {
                     'statusCode': 200,
@@ -173,6 +187,7 @@ def lambda_handler(event, context):
                 }
                 
             except stripe.error.StripeError as e:
+                print(f"Stripe error: {str(e)}")
                 return {
                     'statusCode': 400,
                     'headers': cors_headers,
@@ -180,8 +195,10 @@ def lambda_handler(event, context):
                 }
                 
         elif path == '/payment/status' and method == 'GET':
+            print(f"Getting subscription status for user: {user_id}")
             # Get subscription status
             response = subscriptions_table.get_item(Key={'user_id': user_id})
+            print(f"DynamoDB response: {response}")
             
             if 'Item' not in response:
                 return {
@@ -208,6 +225,7 @@ def lambda_handler(event, context):
         }
         
     except Exception as e:
+        print(f"Payment Lambda error: {str(e)}")
         return {
             'statusCode': 500,
             'headers': cors_headers,
