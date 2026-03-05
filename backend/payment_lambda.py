@@ -107,6 +107,14 @@ def lambda_handler(event, context):
     
     try:
         stripe_keys = get_stripe_keys()
+        
+        if not stripe_keys.get('stripe_secret_key'):
+            return {
+                'statusCode': 500,
+                'headers': cors_headers,
+                'body': json.dumps({'error': 'Stripe secret key not configured'})
+            }
+            
         stripe.api_key = stripe_keys['stripe_secret_key']
         
         method = event['httpMethod']
