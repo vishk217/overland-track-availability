@@ -99,6 +99,12 @@ def handle_webhook_event(event_type, data):
                 )
 
 def lambda_handler(event, context):
+    cors_headers = {
+        'Access-Control-Allow-Origin': 'https://overlandtrackavailability.com',
+        'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+        'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
+    }
+    
     try:
         stripe_keys = get_stripe_keys()
         stripe.api_key = stripe_keys['stripe_secret_key']
@@ -114,12 +120,12 @@ def lambda_handler(event, context):
             signature = event['headers'].get('stripe-signature', '')
             
             if not verify_webhook_signature(payload, signature, stripe_keys['stripe_webhook_secret']):
-                return {'statusCode': 400, 'body': 'Invalid signature'}
+                return {'statusCode': 400, 'headers': cors_headers, 'body': 'Invalid signature'}
             
             webhook_event = json.loads(payload)
             handle_webhook_event(webhook_event['type'], webhook_event['data'])
             
-            return {'statusCode': 200, 'body': 'OK'}
+            return {'statusCode': 200, 'headers': cors_headers, 'body': 'OK'}
         
         # All other endpoints require authentication
         user_id = get_user_from_token(event)
@@ -131,6 +137,7 @@ def lambda_handler(event, context):
                 if not user_email:
                     return {
                         'statusCode': 400,
+                        'headers': cors_headers,
                         'body': json.dumps({'error': 'User email not found'})
                     }
                 
@@ -153,12 +160,14 @@ def lambda_handler(event, context):
                 
                 return {
                     'statusCode': 200,
+                    'headers': cors_headers,
                     'body': json.dumps({'checkout_url': session.url})
                 }
                 
             except stripe.error.StripeError as e:
                 return {
                     'statusCode': 400,
+                    'headers': cors_headers,
                     'body': json.dumps({'error': str(e)})
                 }
                 
@@ -169,12 +178,14 @@ def lambda_handler(event, context):
             if 'Item' not in response:
                 return {
                     'statusCode': 404,
+                    'headers': cors_headers,
                     'body': json.dumps({'error': 'No subscription found'})
                 }
             
             subscription = response['Item']
             return {
                 'statusCode': 200,
+                'headers': cors_headers,
                 'body': json.dumps({
                     'subscription_id': subscription['subscription_id'],
                     'status': subscription['status'],
@@ -184,11 +195,13 @@ def lambda_handler(event, context):
         
         return {
             'statusCode': 404,
+            'headers': cors_headers,
             'body': json.dumps({'error': 'Not found'})
         }
         
     except Exception as e:
         return {
             'statusCode': 500,
+            'headers': cors_headers,
             'body': json.dumps({'error': str(e)})
         }
