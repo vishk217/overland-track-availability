@@ -28,6 +28,12 @@ def generate_token(user_id, email):
     return jwt.encode(payload, get_jwt_secret(), algorithm='HS256')
 
 def lambda_handler(event, context):
+    cors_headers = {
+        'Access-Control-Allow-Origin': 'https://overlandtrackavailability.com',
+        'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+        'Access-Control-Allow-Methods': 'POST,OPTIONS'
+    }
+    
     try:
         body = json.loads(event['body'])
         path = event['path']
@@ -48,6 +54,7 @@ def lambda_handler(event, context):
             if not response['Items'] or not verify_password(body['password'], response['Items'][0]['password']):
                 return {
                     'statusCode': 401,
+                    'headers': cors_headers,
                     'body': json.dumps({'error': 'Invalid credentials'})
                 }
             
@@ -56,6 +63,7 @@ def lambda_handler(event, context):
             
             return {
                 'statusCode': 200,
+                'headers': cors_headers,
                 'body': json.dumps({
                     'token': token,
                     'user': {
@@ -82,6 +90,7 @@ def lambda_handler(event, context):
             if response['Items']:
                 return {
                     'statusCode': 400,
+                    'headers': cors_headers,
                     'body': json.dumps({'error': 'User already exists'})
                 }
             
@@ -98,6 +107,7 @@ def lambda_handler(event, context):
             
             return {
                 'statusCode': 201,
+                'headers': cors_headers,
                 'body': json.dumps({
                     'token': token,
                     'user': {
@@ -110,11 +120,13 @@ def lambda_handler(event, context):
         
         return {
             'statusCode': 404,
+            'headers': cors_headers,
             'body': json.dumps({'error': 'Not found'})
         }
         
     except Exception as e:
         return {
             'statusCode': 500,
+            'headers': cors_headers,
             'body': json.dumps({'error': str(e)})
         }

@@ -28,6 +28,12 @@ def get_user_from_token(event):
         raise Exception('Invalid token')
 
 def lambda_handler(event, context):
+    cors_headers = {
+        'Access-Control-Allow-Origin': 'https://overlandtrackavailability.com',
+        'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+        'Access-Control-Allow-Methods': 'GET,PUT,DELETE,OPTIONS'
+    }
+    
     try:
         user_id = get_user_from_token(event)
         method = event['httpMethod']
@@ -44,6 +50,7 @@ def lambda_handler(event, context):
             
             return {
                 'statusCode': 200,
+                'headers': cors_headers,
                 'body': json.dumps(response['Items'])
             }
             
@@ -67,6 +74,7 @@ def lambda_handler(event, context):
             
             return {
                 'statusCode': 201,
+                'headers': cors_headers,
                 'body': json.dumps(item)
             }
             
@@ -83,16 +91,19 @@ def lambda_handler(event, context):
             
             return {
                 'statusCode': 204,
+                'headers': cors_headers,
                 'body': ''
             }
         
         return {
             'statusCode': 404,
+            'headers': cors_headers,
             'body': json.dumps({'error': 'Not found'})
         }
         
     except Exception as e:
         return {
             'statusCode': 500,
+            'headers': cors_headers,
             'body': json.dumps({'error': str(e)})
         }
