@@ -38,30 +38,6 @@ def get_user_email(user_id):
     response = users_table.get_item(Key={'user_id': user_id})
     return response['Item']['email'] if 'Item' in response else None
 
-def verify_webhook_signature(payload, signature, webhook_secret):
-    print(f"Verifying webhook signature...")
-    print(f"Payload length: {len(payload) if payload else 'None'}")
-    print(f"Signature: {signature}")
-    print(f"Webhook secret exists: {bool(webhook_secret)}")
-    
-    if not payload or not signature or not webhook_secret:
-        print("Missing payload, signature, or webhook secret")
-        return False
-    
-    expected_signature = hmac.new(
-        webhook_secret.encode(),
-        payload.encode(),
-        hashlib.sha256
-    ).hexdigest()
-    
-    expected_full = f"sha256={expected_signature}"
-    print(f"Expected signature: {expected_full}")
-    print(f"Received signature: {signature}")
-    
-    result = hmac.compare_digest(expected_full, signature)
-    print(f"Signature verification result: {result}")
-    return result
-
 def handle_webhook_event(event_type, data):
     users_table = dynamodb.Table(os.environ['USERS_TABLE'])
     subscriptions_table = dynamodb.Table(os.environ['SUBSCRIPTIONS_TABLE'])
@@ -159,13 +135,19 @@ def lambda_handler(event, context):
             signature = event['headers'].get('stripe-signature', '') or event['headers'].get('Stripe-Signature', '')
             print(f"Found signature: {signature}")
             
-            if not verify_webhook_signature(payload, signature, stripe_keys['stripe_webhook_secret']):
+            try:
+                webhook_event = stripe.Webhook.construct_event(
+                    payload, signature, stripe_keys['stripe_webhook_secret']
+                )
+                print(f"Webhook event type: {webhook_event['type']}")
+                handle_webhook_event(webhook_event['type'], webhook_event['data'])
+                return {'statusCode': 200, 'headers': cors_headers, 'body': 'OK'}
+            except ValueError as e:
+                print(f"Invalid payload: {e}")
+                return {'statusCode': 400, 'headers': cors_headers, 'body': 'Invalid payload'}
+            except stripe.error.SignatureVerificationError as e:
+                print(f"Invalid signature: {e}")
                 return {'statusCode': 400, 'headers': cors_headers, 'body': 'Invalid signature'}
-            
-            webhook_event = json.loads(payload)
-            handle_webhook_event(webhook_event['type'], webhook_event['data'])
-            
-            return {'statusCode': 200, 'headers': cors_headers, 'body': 'OK'}
         
         # All other endpoints require authentication
         print("Authenticating user...")
