@@ -122,6 +122,13 @@ def lambda_handler(event, context):
             }
             
         stripe.api_key = stripe_keys['stripe_secret_key']
+        if stripe.api_key is None:
+            print("Error: STRIPE_SECRET_KEY is not set or is None")
+            return {
+                'statusCode': 500,
+                'headers': cors_headers,
+                'body': json.dumps({'error': 'Stripe api key not set properly'})
+            }
         print("Stripe API key set successfully")
         
         method = event['httpMethod']
@@ -164,14 +171,13 @@ def lambda_handler(event, context):
                 print("Creating Stripe session...")
                 session = stripe.checkout.Session.create(
                     customer_email=user_email,
-                    payment_method_types=['card'],
                     line_items=[{
                         'price': stripe_keys['stripe_price_id'],
                         'quantity': 1,
                     }],
                     mode='subscription',
                     success_url=f"{os.environ.get('FRONTEND_URL', 'http://localhost:4200')}/dashboard?success=true",
-                    cancel_url=f"{os.environ.get('FRONTEND_URL', 'http://localhost:4200')}/billing?cancelled=true",
+                    cancel_url=f"{os.environ.get('FRONTEND_URL', 'http://localhost:4200')}/dashboard",
                     subscription_data={
                         'metadata': {
                             'user_id': user_id
