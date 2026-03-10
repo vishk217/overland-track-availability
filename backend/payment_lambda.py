@@ -54,7 +54,7 @@ def handle_webhook_event(event_type, data):
                 'user_id': user_id,
                 'subscription_id': subscription['id'],
                 'status': subscription['status'],
-                'expires_at': int(expires_at.timestamp()),
+                'expires_at': expires_at.isoformat(),
                 'created_at': datetime.utcnow().isoformat()
             })
             
@@ -220,7 +220,7 @@ def lambda_handler(event, context):
                 'body': json.dumps({
                     'subscription_id': subscription['subscription_id'],
                     'status': subscription['status'],
-                    'expires_at': datetime.fromtimestamp(subscription['expires_at']).isoformat()
+                    'expires_at': int(subscription['expires_at'])
                 })
             }
         

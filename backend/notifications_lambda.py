@@ -4,6 +4,12 @@ import uuid
 import jwt
 import os
 from datetime import datetime
+from decimal import Decimal
+
+def decimal_default(obj):
+    if isinstance(obj, Decimal):
+        return int(obj)
+    raise TypeError
 
 dynamodb = boto3.resource('dynamodb')
 secrets_client = boto3.client('secretsmanager')
@@ -58,7 +64,7 @@ def lambda_handler(event, context):
             return {
                 'statusCode': 200,
                 'headers': cors_headers,
-                'body': json.dumps(response['Items'])
+                'body': json.dumps(response['Items'], default=decimal_default)
             }
             
         elif path == '/notifications' and method == 'PUT':
@@ -84,7 +90,7 @@ def lambda_handler(event, context):
             return {
                 'statusCode': 201,
                 'headers': cors_headers,
-                'body': json.dumps(item)
+                'body': json.dumps(item, default=decimal_default)
             }
             
         elif path.startswith('/notifications/') and method == 'DELETE':
