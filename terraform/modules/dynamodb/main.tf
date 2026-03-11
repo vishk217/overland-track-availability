@@ -36,11 +36,6 @@ resource "aws_dynamodb_table" "subscriptions" {
 
   hash_key = "user_id"
 
-  ttl {
-    attribute_name = "expires_at"
-    enabled        = true
-  }
-
   tags = {
     Name = "overland-subscriptions"
   }

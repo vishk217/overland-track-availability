@@ -48,13 +48,13 @@ def handle_webhook_event(event_type, data):
         user_id = subscription.get('metadata', {}).get('user_id')
         
         if user_id:
-            expires_at = datetime.utcnow() + timedelta(days=30)
+            renews_at = datetime.utcnow() + timedelta(days=7)
             
             subscriptions_table.put_item(Item={
                 'user_id': user_id,
                 'subscription_id': subscription['id'],
                 'status': subscription['status'],
-                'expires_at': expires_at.isoformat(),
+                'renews_at': renews_at.isoformat(),
                 'created_at': datetime.utcnow().isoformat()
             })
             
@@ -214,13 +214,21 @@ def lambda_handler(event, context):
                 }
             
             subscription = response['Item']
+            # Convert ISO string to milliseconds timestamp for frontend
+            renews_at = subscription['renews_at']
+            if isinstance(renews_at, str):
+                renews_timestamp = int(datetime.fromisoformat(renews_at).timestamp() * 1000)
+            else:
+                # Handle legacy Unix timestamp data
+                renews_timestamp = int(renews_at) * 1000
+            
             return {
                 'statusCode': 200,
                 'headers': cors_headers,
                 'body': json.dumps({
                     'subscription_id': subscription['subscription_id'],
                     'status': subscription['status'],
-                    'expires_at': int(subscription['expires_at'])
+                    'renews_at': renews_timestamp
                 })
             }
         

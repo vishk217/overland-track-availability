@@ -29,18 +29,28 @@ import { NotificationService, NotificationPreference } from '../services/notific
         </div>
       }
       
-      @if (subscription()) {
+      @if (subscriptionLoading()) {
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Loading subscription status...</p>
+        </div>
+      } @else if (subscription()) {
         <div class="subscription-status">
           <h3>Subscription Status</h3>
           <p>Status: <span [class]="subscription()?.status">{{ subscription()?.status }}</span></p>
-          @if (subscription()?.expires_at) {
-            <p>Expires: {{ subscription()?.expires_at | date }}</p>
+          @if (subscription()?.renews_at) {
+            <p>Renews: {{ subscription()?.renews_at | date }}</p>
           }
         </div>
       }
 
       <nav class="dashboard-nav">
-        @if (subscription()?.status === 'active') {
+        @if (subscriptionLoading()) {
+          <div class="nav-loading">
+            <div class="loading-spinner"></div>
+            <p>Loading...</p>
+          </div>
+        } @else if (subscription()?.status === 'active') {
           <a routerLink="/notifications" class="nav-button">Create New Alert</a>
           <a [href]="billingUrl" target="_blank" class="nav-button">Manage Billing</a>
         } @else {
@@ -53,7 +63,9 @@ import { NotificationService, NotificationPreference } from '../services/notific
         }
       </nav>
 
-      @if (subscription()?.status === 'active') {
+      @if (subscriptionLoading()) {
+        <!-- Show loading while subscription status loads -->
+      } @else if (subscription()?.status === 'active') {
         @if (preferences().length > 0) {
           <div class="existing-notifications">
             <h3>Active Alerts ({{ preferences().length }})</h3>
@@ -289,8 +301,38 @@ import { NotificationService, NotificationPreference } from '../services/notific
       font-size: 0.9rem;
       transition: background 0.2s;
     }
-    .delete-btn:hover {
-      background: #c82333;
+    .loading-container, .nav-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border: 1px solid #e9ecef;
+      margin-bottom: 2rem;
+    }
+    .nav-loading {
+      margin-bottom: 0;
+    }
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #e9ecef;
+      border-top: 4px solid #55437e;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+    .loading-container p, .nav-loading p {
+      color: #6c757d;
+      margin: 0;
+      font-size: 1rem;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
     @media (max-width: 768px) {
       header {
@@ -320,6 +362,7 @@ export class DashboardComponent implements OnInit {
   preferences = signal<NotificationPreference[]>([]);
   showSuccessMessage = signal(false);
   loading = signal(false);
+  subscriptionLoading = signal(false);
   billingUrl = (globalThis as any).process?.env?.['STRIPE_BILLING_URL'] || 'https://billing.stripe.com/p/login/test_aFa4gy5Wn2hW0358s26c000'; // #TODO
 
   ngOnInit(): void {
@@ -342,9 +385,16 @@ export class DashboardComponent implements OnInit {
   }
 
   loadSubscriptionStatus(): void {
+    this.subscriptionLoading.set(true);
     this.paymentService.getSubscriptionStatus().subscribe({
-      next: (sub) => this.subscription.set(sub),
-      error: (err) => console.error('Failed to load subscription:', err)
+      next: (sub) => {
+        this.subscription.set(sub);
+        this.subscriptionLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load subscription:', err);
+        this.subscriptionLoading.set(false);
+      }
     });
   }
 
