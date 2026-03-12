@@ -214,8 +214,8 @@ def lambda_handler(event, context):
                 }
             
             subscription = response['Item']
-            # Convert ISO string to milliseconds timestamp for frontend
-            renews_at = subscription['renews_at']
+            # Handle both old expires_at and new renews_at fields
+            renews_at = subscription.get('renews_at') or subscription.get('expires_at')
             if isinstance(renews_at, str):
                 renews_timestamp = int(datetime.fromisoformat(renews_at).timestamp() * 1000)
             else:
