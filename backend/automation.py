@@ -74,6 +74,7 @@ class OverlandTrackAutomation:
                 page.goto("https://azapps.customlinc.com.au/tasparksoverland/BookingCat/Availability/?Category=OVERLAND", timeout=30000)
                 print("Navigated Successfully")
                 
+                page.wait_for_selector("#datetimepicker-input", timeout=10000)
                 dateToProcess = page.get_attribute("#datetimepicker-input", "value")
                 print(f"Today's Date: {dateToProcess}")
 
