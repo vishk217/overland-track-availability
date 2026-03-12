@@ -72,7 +72,10 @@ class OverlandTrackAutomation:
                 page = context.new_page()
                 print("Page created successfully")
                 page.set_default_timeout(10000)
-                page.goto("https://azapps.customlinc.com.au/tasparksoverland/BookingCat/Availability/?Category=OVERLAND", timeout=30000)
+                print(f"Attempting to navigate to URL...")
+                response_obj = page.goto("https://azapps.customlinc.com.au/tasparksoverland/BookingCat/Availability/?Category=OVERLAND", wait_until="networkidle", timeout=30000)
+                print(f"Navigation response status: {response_obj.status if response_obj else 'None'}")
+                print(f"Current URL: {page.url}")
                 print("Navigated Successfully")
                 
                 screenshot_bytes = page.screenshot()
