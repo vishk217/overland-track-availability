@@ -2,6 +2,7 @@ from playwright.sync_api import sync_playwright
 from datetime import datetime, timedelta
 import time
 import pytz
+import base64
 
 class OverlandTrackAutomation:
 
@@ -73,6 +74,10 @@ class OverlandTrackAutomation:
                 page.set_default_timeout(10000)
                 page.goto("https://azapps.customlinc.com.au/tasparksoverland/BookingCat/Availability/?Category=OVERLAND", timeout=30000)
                 print("Navigated Successfully")
+                
+                screenshot_bytes = page.screenshot()
+                encoded_screenshot = base64.b64encode(screenshot_bytes).decode('utf-8')
+                print(f"Encoded Screenshot: {encoded_screenshot}")
                 
                 page.wait_for_selector("#datetimepicker-input", timeout=10000)
                 dateToProcess = page.get_attribute("#datetimepicker-input", "value")
