@@ -67,7 +67,7 @@ class OverlandTrackAutomation:
                 if not browser:
                     raise Exception("Failed to launch browser")
                 
-                context = browser.new_context(ignore_https_errors=True)
+                context = browser.new_context(ignore_https_errors=True, user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36')
                 print("Context created successfully")
                 page = context.new_page()
                 print("Page created successfully")
@@ -150,3 +150,5 @@ class OverlandTrackAutomation:
                     pass
         
         return {"lastUpdated": datetime.now(pytz.timezone('Australia/Sydney')).strftime("%B %d, %Y at %I:%M %p AEST"), "response": response}
+
+print(OverlandTrackAutomation().automation())
