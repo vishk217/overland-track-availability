@@ -78,13 +78,13 @@ class OverlandTrackAutomation:
                 print(f"Current URL: {page.url}")
                 print("Navigated Successfully")
                 
-                screenshot_bytes = page.screenshot()
-                encoded_screenshot = base64.b64encode(screenshot_bytes).decode('utf-8')
-                print(f"Encoded Screenshot: {encoded_screenshot}")
+                # screenshot_bytes = page.screenshot()
+                # encoded_screenshot = base64.b64encode(screenshot_bytes).decode('utf-8')
+                # print(f"Encoded Screenshot: {encoded_screenshot}")
                 
-                page_content = page.content()
-                print(f"Page DOM length: {len(page_content)}")
-                print(f"Page DOM content: {page_content}")
+                # page_content = page.content()
+                # print(f"Page DOM length: {len(page_content)}")
+                # print(f"Page DOM content: {page_content}")
                 
                 page.wait_for_selector("#datetimepicker-input", timeout=10000)
                 dateToProcess = page.get_attribute("#datetimepicker-input", "value")
