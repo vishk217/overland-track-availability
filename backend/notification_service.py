@@ -92,23 +92,37 @@ def check_availability_changes(current_data, previous_data):
     return changes
 
 def lambda_handler(event, context):
+    print(f"Lambda execution started at {datetime.utcnow().isoformat()}")
     try:
         # Get current availability data
+        print("Fetching current availability data...")
         automation = OverlandTrackAutomation()
         current_data = automation.automation()
         
         if not current_data:
+            print("ERROR: Failed to get availability data")
             return {'statusCode': 500, 'body': 'Failed to get availability data'}
         
+        print(f"Current data retrieved: {len(current_data.get('response', {}))} dates")
+        
         # Get previous data
+        print("Fetching previous availability data...")
         previous_data = get_previous_availability()
+        print(f"Previous data: {'Found' if previous_data else 'Not found'}")
         
         # Check for changes
+        print("Checking for availability changes...")
         changes = check_availability_changes(current_data, previous_data)
+        print(f"Changes detected: {len(changes)}")
         
         if changes:
+            print(f"Processing {len(changes)} availability changes")
+            for change in changes:
+                print(f"  - {change['date']}: {change['availability']}")
+            
             # Get all active notification preferences with pagination
             notifications_table = dynamodb.Table(os.environ['NOTIFICATIONS_TABLE'])
+            notifications_sent = 0
             
             last_evaluated_key = None
             while True:
@@ -122,6 +136,7 @@ def lambda_handler(event, context):
                     scan_kwargs['ExclusiveStartKey'] = last_evaluated_key
                 
                 response = notifications_table.scan(**scan_kwargs)
+                print(f"Processing {len(response['Items'])} notification preferences")
                 
                 for notification in response['Items']:
                     user_dates = notification['dates']
@@ -137,12 +152,14 @@ def lambda_handler(event, context):
                             message += f"Availability: {change['availability']}\n"
                             message += f"Book now: https://azapps.customlinc.com.au/tasparksoverland/"
                             
+                            print(f"Sending notification to user {notification['user_id']} for {change['date']}")
                             send_notification(
                                 notification['user_id'],
                                 notification['contact_method'],
                                 notification['contact_value'],
                                 message
                             )
+                            notifications_sent += 1
                             break  # Only send one notification per user per run
                 
                 # Check if there are more items to process
@@ -151,6 +168,7 @@ def lambda_handler(event, context):
                     break
         
         # Upload current data to S3
+        print("Uploading current data to S3...")
         s3.put_object(
             Bucket=os.environ['S3_BUCKET'],
             Key='availability.json',
@@ -158,20 +176,25 @@ def lambda_handler(event, context):
             ContentType='application/json',
             CacheControl='max-age=300'
         )
+        print("S3 upload completed")
         
-        return {
+        result = {
             'statusCode': 200,
             'body': json.dumps({
                 'message': 'Notification check completed',
                 'changes_found': len(changes),
-                'notifications_sent': len(changes),  # Simplified count
+                'notifications_sent': notifications_sent if changes else 0,
                 'lastUpdated': current_data.get('lastUpdated'),
                 'dataCount': len(current_data.get('response', {}))
             })
         }
+        print(f"Lambda execution completed successfully: {result['body']}")
+        return result
         
     except Exception as e:
-        print(f"Error: {str(e)}")
+        print(f"ERROR: Lambda execution failed: {str(e)}")
+        import traceback
+        print(f"Traceback: {traceback.format_exc()}")
         return {
             'statusCode': 500,
             'body': json.dumps({'error': str(e)})
