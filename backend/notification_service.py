@@ -77,16 +77,24 @@ def check_availability_changes(current_data, previous_data):
     for date, availability in current_response.items():
         previous_availability = previous_response.get(date, 'Unknown')
         
-        # Check if availability improved
-        if (previous_availability == 'Fully Booked' and 
-            availability != 'Fully Booked' and 
-            'spots left' in availability):
-            
-            spots = int(availability.split()[0]) if availability.split()[0].isdigit() else 0
+        # Extract spot counts for comparison
+        def get_spot_count(avail_text):
+            if 'Fully Booked' in avail_text:
+                return 0
+            elif 'spots left' in avail_text:
+                parts = avail_text.split()
+                return int(parts[0]) if parts[0].isdigit() else 0
+            return 0
+        
+        current_spots = get_spot_count(availability)
+        previous_spots = get_spot_count(previous_availability)
+        
+        # Check if availability improved (more spots available)
+        if current_spots > previous_spots and current_spots > 0:
             changes.append({
                 'date': date,
                 'availability': availability,
-                'spots': spots
+                'spots': current_spots
             })
     
     return changes
@@ -125,7 +133,11 @@ def lambda_handler(event, context):
             notifications_sent = 0
             
             last_evaluated_key = None
+            page_count = 0
             while True:
+                page_count += 1
+                print(f"Processing notification preferences page {page_count}")
+                
                 scan_kwargs = {
                     'FilterExpression': 'active = :active',
                     'ExpressionAttributeValues': {':active': True},
@@ -134,18 +146,22 @@ def lambda_handler(event, context):
                 
                 if last_evaluated_key:
                     scan_kwargs['ExclusiveStartKey'] = last_evaluated_key
+                    print(f"Continuing from last evaluated key: {last_evaluated_key}")
                 
                 response = notifications_table.scan(**scan_kwargs)
-                print(f"Processing {len(response['Items'])} notification preferences")
+                print(f"Processing {len(response['Items'])} notification preferences on page {page_count}")
                 
                 for notification in response['Items']:
                     user_dates = notification['dates']
                     min_quantity = notification['quantity']
+                    print(f"Checking user {notification['user_id']}: wants {min_quantity}+ spots for dates {user_dates}")
                     
                     # Check if any changes match user preferences
                     for change in changes:
                         if (change['date'] in user_dates and 
                             change['spots'] >= min_quantity):
+                            
+                            print(f"Match found! User {notification['user_id']} wants {min_quantity}+ spots, {change['spots']} available on {change['date']}")
                             
                             message = f"Overland Track availability alert!\n\n"
                             message += f"Date: {change['date']}\n"
@@ -161,11 +177,19 @@ def lambda_handler(event, context):
                             )
                             notifications_sent += 1
                             break  # Only send one notification per user per run
+                        else:
+                            if change['date'] not in user_dates:
+                                print(f"  - Date {change['date']} not in user's preferred dates")
+                            elif change['spots'] < min_quantity:
+                                print(f"  - Only {change['spots']} spots available, user wants {min_quantity}+")
                 
                 # Check if there are more items to process
                 last_evaluated_key = response.get('LastEvaluatedKey')
                 if not last_evaluated_key:
+                    print(f"Completed processing all notification preferences after {page_count} pages")
                     break
+                else:
+                    print(f"More items to process, continuing to next page...")
         
         # Upload current data to S3
         print("Uploading current data to S3...")
