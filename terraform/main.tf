@@ -57,8 +57,7 @@ module "lambda_notifications" {
   notification_history_table_name = module.dynamodb.notification_history_table_name
   notification_history_table_arn = module.dynamodb.notification_history_table_arn
   app_secrets_arn = module.secrets.app_secrets_arn
-  email_topic_arn = module.sns.email_topic_arn
-  sms_topic_arn = module.sns.sms_topic_arn
+  ses_sender_email = var.ses_sender_email
   s3_bucket_arn = module.s3.bucket_arn
   notification_service_image_uri = "${module.ecr.repository_url}:${var.image_tag}"
   frontend_url = "https://${var.domain_name[0]}"
@@ -68,16 +67,14 @@ module "lambda_notifications" {
   }
 }
 
-module "sns" {
-  source = "./modules/sns"
-  notification_lambda_arn = module.lambda_notifications.notification_service_arn
-}
-
 module "monitoring" {
   source = "./modules/monitoring"
-  email_topic_name    = module.sns.email_topic_name
-  sms_topic_name      = module.sns.sms_topic_name
-  sns_log_group_name  = module.sns.sns_log_group_name
+  lambda_log_group_name = "/aws/lambda/${var.lambda_function_name}-notification-service"
+}
+
+module "ses" {
+  source      = "./modules/ses"
+  domain_name = var.domain_name[0]
 }
 
 module "api_gateway" {

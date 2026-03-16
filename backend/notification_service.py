@@ -6,6 +6,7 @@ from automation import OverlandTrackAutomation
 
 dynamodb = boto3.resource('dynamodb')
 sns = boto3.client('sns')
+ses = boto3.client('ses')
 s3 = boto3.client('s3')
 
 def get_previous_availability():
@@ -33,30 +34,39 @@ def check_rate_limit(user_id):
     return len(response['Items']) < 5  # Max 5 notifications per day
 
 def send_notification(user_id, contact_method, contact_value, message):
+    print(f"Attempting to send {contact_method} notification to user {user_id}")
+    
     if not check_rate_limit(user_id):
         print(f"Rate limit exceeded for user {user_id}")
         return
     
+    print(f"Rate limit check passed for user {user_id}")
+    
     try:
         if contact_method == 'email':
-            sns.publish(
-                TopicArn=os.environ['EMAIL_TOPIC_ARN'],
-                Message=message,
-                Subject='Overland Track Availability Alert',
-                MessageAttributes={
-                    'email': {'DataType': 'String', 'StringValue': contact_value}
+            print(f"Sending email notification to {contact_value} via SES")
+            ses.send_email(
+                Source=os.environ['SES_SENDER_EMAIL'],
+                Destination={'ToAddresses': [contact_value]},
+                Message={
+                    'Subject': {'Data': 'Overland Track Availability Alert'},
+                    'Body': {'Text': {'Data': message}}
                 }
             )
+            print(f"Email notification sent successfully to {contact_value}")
         elif contact_method == 'sms':
+            print(f"Sending SMS notification to {contact_value}")
             sns.publish(
-                TopicArn=os.environ['SMS_TOPIC_ARN'],
-                Message=message,
-                MessageAttributes={
-                    'phone': {'DataType': 'String', 'StringValue': contact_value}
-                }
+                PhoneNumber=contact_value,
+                Message=message
             )
+            print(f"SMS notification sent successfully to {contact_value}")
+        else:
+            print(f"Unknown contact method: {contact_method}")
+            return
         
         # Log notification
+        print(f"Recording notification in history table for user {user_id}")
         history_table = dynamodb.Table(os.environ['NOTIFICATION_HISTORY_TABLE'])
         history_table.put_item(Item={
             'user_id': user_id,
@@ -65,9 +75,12 @@ def send_notification(user_id, contact_method, contact_value, message):
             'message': message,
             'expires_at': int((datetime.utcnow() + timedelta(days=30)).timestamp())
         })
+        print(f"Notification history recorded successfully for user {user_id}")
         
     except Exception as e:
-        print(f"Failed to send notification: {e}")
+        print(f"Failed to send notification to user {user_id}: {e}")
+        import traceback
+        print(f"Traceback: {traceback.format_exc()}")
 
 def check_availability_changes(current_data, previous_data):
     if not previous_data:

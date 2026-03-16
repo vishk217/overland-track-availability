@@ -77,8 +77,7 @@ resource "aws_lambda_function" "notification_service" {
     variables = merge(var.environment_variables, {
       NOTIFICATIONS_TABLE = var.notifications_table_name
       NOTIFICATION_HISTORY_TABLE = var.notification_history_table_name
-      EMAIL_TOPIC_ARN = var.email_topic_arn
-      SMS_TOPIC_ARN = var.sms_topic_arn
+      SES_SENDER_EMAIL = var.ses_sender_email
     })
   }
 }
@@ -148,12 +147,16 @@ resource "aws_iam_role_policy" "lambda_policy" {
       {
         Effect = "Allow"
         Action = [
+          "ses:SendEmail"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "sns:Publish"
         ]
-        Resource = [
-          var.email_topic_arn,
-          var.sms_topic_arn
-        ]
+        Resource = "*"
       },
       {
         Effect = "Allow"

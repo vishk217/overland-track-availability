@@ -33,3 +33,24 @@ output "data_bucket_name" {
   description = "S3 bucket name for data storage"
   value       = module.s3.bucket_name
 }
+
+output "ses_verification_token" {
+  description = "Add this TXT record in Namecheap: Host=_amazonses, Value=this token"
+  value       = module.ses.verification_token
+}
+
+output "ses_dkim_tokens" {
+  description = "Add these CNAME records in Namecheap for DKIM"
+  value = [for token in module.ses.dkim_tokens : {
+    host  = "${token}._domainkey"
+    value = "${token}.dkim.amazonses.com"
+  }]
+}
+
+output "ses_mail_from_records" {
+  description = "Add these records in Namecheap for MAIL FROM domain"
+  value = {
+    mx_record  = { host = "mail", value = "feedback-smtp.ap-southeast-2.amazonses.com", priority = 10 }
+    spf_record = { host = "mail", type = "TXT", value = "v=spf1 include:amazonses.com ~all" }
+  }
+}

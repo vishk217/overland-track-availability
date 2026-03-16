@@ -48,13 +48,8 @@ variable "app_secrets_arn" {
   type        = string
 }
 
-variable "email_topic_arn" {
-  description = "SNS email topic ARN"
-  type        = string
-}
-
-variable "sms_topic_arn" {
-  description = "SNS SMS topic ARN"
+variable "ses_sender_email" {
+  description = "Verified SES sender email address"
   type        = string
 }
 

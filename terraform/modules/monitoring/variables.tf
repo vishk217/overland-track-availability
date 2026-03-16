@@ -1,14 +1,4 @@
-variable "email_topic_name" {
-  description = "Name of the email SNS topic"
-  type        = string
-}
-
-variable "sms_topic_name" {
-  description = "Name of the SMS SNS topic"
-  type        = string
-}
-
-variable "sns_log_group_name" {
-  description = "Name of the SNS CloudWatch log group"
+variable "lambda_log_group_name" {
+  description = "CloudWatch log group name for the notification service Lambda"
   type        = string
 }
