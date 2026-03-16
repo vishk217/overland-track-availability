@@ -75,6 +75,7 @@ module "monitoring" {
 module "ses" {
   source      = "./modules/ses"
   domain_name = var.domain_name[0]
+  aws_region  = var.aws_region
 }
 
 module "api_gateway" {
