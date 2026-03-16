@@ -49,8 +49,11 @@ def send_notification(user_id, contact_method, contact_value, message):
             )
         elif contact_method == 'sms':
             sns.publish(
-                PhoneNumber=contact_value,
-                Message=message
+                TopicArn=os.environ['SMS_TOPIC_ARN'],
+                Message=message,
+                MessageAttributes={
+                    'phone': {'DataType': 'String', 'StringValue': contact_value}
+                }
             )
         
         # Log notification

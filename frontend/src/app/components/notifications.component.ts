@@ -30,7 +30,7 @@ import { NotificationService, NotificationPreference } from '../services/notific
         
         <div class="form-group">
           <label>Alert when spots available ≥</label>
-          <input type="number" formControlName="quantity" min="1" max="8">
+          <input type="number" formControlName="quantity" min="1">
         </div>
         
         <div class="form-group">
