@@ -44,13 +44,11 @@ import intlTelInput from 'intl-tel-input';
         
         <div class="form-group">
           <label>Contact</label>
-          <input
-            [type]="notificationForm.get('contact_method')?.value === 'sms' ? 'tel' : 'text'"
-            #phoneInput
-            formControlName="contact_value"
-            [placeholder]="notificationForm.get('contact_method')?.value === 'sms' ? '491 048 184' : 'your@email.com'"
-            (input)="onPhoneInput()"
-          >
+          @if (notificationForm.get('contact_method')?.value === 'sms') {
+            <input type="tel" #phoneInput placeholder="491 048 184">
+          } @else {
+            <input type="text" formControlName="contact_value" placeholder="your@email.com">
+          }
         </div>
         
         <button type="submit" [disabled]="notificationForm.invalid || loading()">
@@ -197,14 +195,14 @@ export class NotificationsComponent implements AfterViewInit, OnDestroy {
     endDate: ['', Validators.required],
     quantity: [1, [Validators.required, Validators.min(1)]],
     contact_method: ['sms', Validators.required],
-    contact_value: ['', Validators.required],
+    contact_value: [''],
   });
 
   loading = signal(false);
   dateRangeError = '';
 
   ngAfterViewInit(): void {
-    this.initPhoneInput();
+    setTimeout(() => this.initPhoneInput());
     this.notificationForm.get('contact_method')?.valueChanges.subscribe((method) => {
       this.notificationForm.get('contact_value')?.reset('');
       if (method === 'sms') {
@@ -237,14 +235,14 @@ export class NotificationsComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  onPhoneInput(): void {
-    if (this.iti) {
-      this.notificationForm.get('contact_value')?.setValue(this.iti.getNumber(), { emitEvent: false });
-    }
-  }
-
   onSubmit(): void {
-    if (this.notificationForm.valid) {
+    const method = this.notificationForm.get('contact_method')?.value;
+    if (method === 'sms') {
+      const number = this.iti?.getNumber() || '';
+      if (!number) return;
+      this.notificationForm.get('contact_value')?.setValue(number);
+    }
+    if (this.notificationForm.valid && this.notificationForm.get('contact_value')?.value) {
       this.loading.set(true);
       this.dateRangeError = '';
       
@@ -276,16 +274,11 @@ export class NotificationsComponent implements AfterViewInit, OnDestroy {
         return;
       }
       
-      let contactValue = formValue.contact_value;
-      if (formValue.contact_method === 'sms' && this.iti) {
-        contactValue = this.iti.getNumber();
-      }
-
       const preference = {
         dates,
         quantity: formValue.quantity,
         contact_method: formValue.contact_method,
-        contact_value: contactValue,
+        contact_value: formValue.contact_value,
       };
 
       this.notificationService.savePreference(preference).subscribe({
