@@ -44,11 +44,13 @@ import intlTelInput from 'intl-tel-input';
         
         <div class="form-group">
           <label>Contact</label>
-          @if (notificationForm.get('contact_method')?.value === 'sms') {
-            <input type="tel" #phoneInput formControlName="contact_value" placeholder="491 048 184">
-          } @else {
-            <input type="text" formControlName="contact_value" placeholder="your@email.com">
-          }
+          <input
+            [type]="notificationForm.get('contact_method')?.value === 'sms' ? 'tel' : 'text'"
+            #phoneInput
+            formControlName="contact_value"
+            [placeholder]="notificationForm.get('contact_method')?.value === 'sms' ? '491 048 184' : 'your@email.com'"
+            (input)="onPhoneInput()"
+          >
         </div>
         
         <button type="submit" [disabled]="notificationForm.invalid || loading()">
@@ -203,23 +205,41 @@ export class NotificationsComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.initPhoneInput();
-    this.notificationForm.get('contact_method')?.valueChanges.subscribe(() => {
-      setTimeout(() => this.initPhoneInput());
+    this.notificationForm.get('contact_method')?.valueChanges.subscribe((method) => {
+      this.notificationForm.get('contact_value')?.reset('');
+      if (method === 'sms') {
+        setTimeout(() => this.initPhoneInput());
+      } else {
+        this.destroyPhoneInput();
+      }
     });
   }
 
   ngOnDestroy(): void {
-    this.iti?.destroy();
+    this.destroyPhoneInput();
+  }
+
+  private destroyPhoneInput(): void {
+    if (this.iti) {
+      this.iti.destroy();
+      this.iti = null;
+    }
   }
 
   private initPhoneInput(): void {
-    this.iti?.destroy();
+    this.destroyPhoneInput();
     if (this.phoneInput?.nativeElement) {
       this.iti = intlTelInput(this.phoneInput.nativeElement, {
         initialCountry: 'au',
         countryOrder: ['au', 'nz', 'us', 'gb'],
         separateDialCode: true,
       });
+    }
+  }
+
+  onPhoneInput(): void {
+    if (this.iti) {
+      this.notificationForm.get('contact_value')?.setValue(this.iti.getNumber(), { emitEvent: false });
     }
   }
 
