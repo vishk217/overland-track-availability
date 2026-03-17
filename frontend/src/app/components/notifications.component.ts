@@ -237,12 +237,23 @@ export class NotificationsComponent implements AfterViewInit, OnDestroy {
 
   onSubmit(): void {
     const method = this.notificationForm.get('contact_method')?.value;
+    console.log('onSubmit called, method:', method);
+    console.log('iti instance:', this.iti);
+    console.log('iti.getNumber():', this.iti?.getNumber());
+    console.log('form value before SMS override:', this.notificationForm.value);
+
     if (method === 'sms') {
       const number = this.iti?.getNumber() || '';
+      console.log('SMS number extracted:', number);
       if (!number) return;
       this.notificationForm.get('contact_value')?.setValue(number);
     }
-    if (this.notificationForm.valid && this.notificationForm.get('contact_value')?.value) {
+
+    console.log('form value after SMS override:', this.notificationForm.value);
+    console.log('form valid:', this.notificationForm.valid);
+    console.log('contact_value:', this.notificationForm.get('contact_value')?.value);
+
+    if (this.notificationForm.valid) {
       this.loading.set(true);
       this.dateRangeError = '';
       
