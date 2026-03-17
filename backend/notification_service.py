@@ -144,7 +144,7 @@ def lambda_handler(event, context):
             for change in changes:
                 print(f"  - {change['date']}: {change['availability']}")
             
-            # Get all active notification preferences with pagination
+            # Get all notification preferences with pagination
             notifications_table = dynamodb.Table(os.environ['NOTIFICATIONS_TABLE'])
             notifications_sent = 0
             
@@ -155,8 +155,6 @@ def lambda_handler(event, context):
                 print(f"Processing notification preferences page {page_count}")
                 
                 scan_kwargs = {
-                    'FilterExpression': 'active = :active',
-                    'ExpressionAttributeValues': {':active': True},
                     'Limit': 100  # Process 100 items at a time
                 }
                 
@@ -182,7 +180,7 @@ def lambda_handler(event, context):
                             message = f"Overland Track availability alert!\n\n"
                             message += f"Date: {change['date']}\n"
                             message += f"Availability: {change['availability']}\n"
-                            message += f"Book now: https://azapps.customlinc.com.au/tasparksoverland/"
+                            message += f"Book now: https://azapps.customlinc.com.au/tasparksoverland/BookingCat/Availability/?Category=OVERLAND"
                             
                             print(f"Sending notification to user {notification['user_id']} for {change['date']}")
                             send_notification(

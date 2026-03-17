@@ -81,7 +81,6 @@ def lambda_handler(event, context):
                 'quantity': body['quantity'],
                 'contact_method': body['contact_method'],
                 'contact_value': body['contact_value'],
-                'active': body.get('active', True),
                 'created_at': datetime.utcnow().isoformat()
             }
             

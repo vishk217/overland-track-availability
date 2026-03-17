@@ -9,7 +9,6 @@ export interface NotificationPreference {
   quantity: number;
   contact_method: 'email' | 'sms';
   contact_value: string;
-  active: boolean;
   created_at: string;
 }
 

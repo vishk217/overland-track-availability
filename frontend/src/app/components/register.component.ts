@@ -24,7 +24,11 @@ import { AuthService } from '../services/auth.service';
           <input type="password" formControlName="confirmPassword" placeholder="Confirm Password" required>
         </div>
         <button type="submit" [disabled]="registerForm.invalid || loading()">
-          {{ loading() ? 'Creating Account...' : 'Register' }}
+          @if (loading()) {
+            <span class="spinner"></span>
+          } @else {
+            Register
+          }
         </button>
         @if (error) {
           <p class="error">{{ error }}</p>
@@ -100,6 +104,19 @@ import { AuthService } from '../services/auth.service';
     button:disabled {
       opacity: 0.6;
       cursor: not-allowed;
+    }
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
     .error {
       color: #dc3545;
