@@ -1,8 +1,9 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { NotificationService, NotificationPreference } from '../services/notification.service';
+import { NotificationService } from '../services/notification.service';
+import intlTelInput from 'intl-tel-input';
 
 @Component({
   selector: 'app-notifications',
@@ -43,8 +44,11 @@ import { NotificationService, NotificationPreference } from '../services/notific
         
         <div class="form-group">
           <label>Contact</label>
-          <input type="text" formControlName="contact_value" 
-                 [placeholder]="notificationForm.get('contact_method')?.value === 'email' ? 'your@email.com' : '+61400000000'">
+          @if (notificationForm.get('contact_method')?.value === 'sms') {
+            <input type="tel" #phoneInput formControlName="contact_value" placeholder="491 048 184">
+          } @else {
+            <input type="text" formControlName="contact_value" placeholder="your@email.com">
+          }
         </div>
         
         <button type="submit" [disabled]="notificationForm.invalid || loading()">
@@ -107,6 +111,13 @@ import { NotificationService, NotificationPreference } from '../services/notific
       transition: border-color 0.2s, box-shadow 0.2s;
       box-sizing: border-box;
       background: #fff;
+    }
+    .phone-input {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .iti {
+      width: 100%;
     }
     input:focus, select:focus {
       outline: none;
@@ -171,22 +182,46 @@ import { NotificationService, NotificationPreference } from '../services/notific
     }
   `]
 })
-export class NotificationsComponent {
+export class NotificationsComponent implements AfterViewInit, OnDestroy {
   private fb = inject(FormBuilder);
   private notificationService = inject(NotificationService);
   private router = inject(Router);
 
+  @ViewChild('phoneInput') phoneInput!: ElementRef;
+  private iti: any;
+
   notificationForm: FormGroup = this.fb.group({
     startDate: ['', Validators.required],
     endDate: ['', Validators.required],
-    quantity: [1, [Validators.required, Validators.min(1), Validators.max(8)]],
+    quantity: [1, [Validators.required, Validators.min(1)]],
     contact_method: ['sms', Validators.required],
     contact_value: ['', Validators.required],
-    active: [true]
   });
 
   loading = signal(false);
   dateRangeError = '';
+
+  ngAfterViewInit(): void {
+    this.initPhoneInput();
+    this.notificationForm.get('contact_method')?.valueChanges.subscribe(() => {
+      setTimeout(() => this.initPhoneInput());
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.iti?.destroy();
+  }
+
+  private initPhoneInput(): void {
+    this.iti?.destroy();
+    if (this.phoneInput?.nativeElement) {
+      this.iti = intlTelInput(this.phoneInput.nativeElement, {
+        initialCountry: 'au',
+        countryOrder: ['au', 'nz', 'us', 'gb'],
+        separateDialCode: true,
+      });
+    }
+  }
 
   onSubmit(): void {
     if (this.notificationForm.valid) {
@@ -221,12 +256,16 @@ export class NotificationsComponent {
         return;
       }
       
+      let contactValue = formValue.contact_value;
+      if (formValue.contact_method === 'sms' && this.iti) {
+        contactValue = this.iti.getNumber();
+      }
+
       const preference = {
         dates,
         quantity: formValue.quantity,
         contact_method: formValue.contact_method,
-        contact_value: formValue.contact_value,
-        active: formValue.active
+        contact_value: contactValue,
       };
 
       this.notificationService.savePreference(preference).subscribe({

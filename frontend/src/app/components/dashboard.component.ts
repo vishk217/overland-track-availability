@@ -39,7 +39,7 @@ import { NotificationService, NotificationPreference } from '../services/notific
           <h3>Subscription Status</h3>
           <p>Status: <span [class]="subscription()?.status">{{ subscription()?.status }}</span></p>
           @if (subscription()?.renews_at) {
-            <p>Renews: {{ subscription()?.renews_at | date }}</p>
+            <p>Renews/Expires: {{ subscription()?.renews_at | date }}</p>
           }
         </div>
       }
@@ -72,7 +72,7 @@ import { NotificationService, NotificationPreference } from '../services/notific
             @for (pref of preferences(); track pref.notification_id) {
               <div class="notification-item">
                 <div class="notification-details">
-                  <p><strong>Dates:</strong> {{ pref.dates.join(', ') }}</p>
+                  <p><strong>Dates:</strong> {{ pref.dates[0] }} - {{ pref.dates[pref.dates.length - 1] }}</p>
                   <p><strong>Quantity:</strong> {{ pref.quantity }}+</p>
                   <p><strong>Contact:</strong> {{ pref.contact_method }} - {{ pref.contact_value }}</p>
                 </div>
