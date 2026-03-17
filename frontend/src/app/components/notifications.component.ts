@@ -231,6 +231,7 @@ export class NotificationsComponent implements AfterViewInit, OnDestroy {
         initialCountry: 'au',
         countryOrder: ['au', 'nz', 'us', 'gb'],
         separateDialCode: true,
+        loadUtils: () => import('intl-tel-input/build/js/utils.js'),
       });
     }
   }
