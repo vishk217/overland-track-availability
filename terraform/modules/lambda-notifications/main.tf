@@ -34,6 +34,7 @@ resource "aws_lambda_function" "payment_lambda" {
     variables = {
       USERS_TABLE = var.users_table_name
       SUBSCRIPTIONS_TABLE = var.subscriptions_table_name
+      NOTIFICATIONS_TABLE = var.notifications_table_name
       APP_SECRETS_ARN = var.app_secrets_arn
       FRONTEND_URL = var.frontend_url
     }
