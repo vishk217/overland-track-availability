@@ -59,7 +59,7 @@ import { NotificationService, NotificationPreference } from '../services/notific
           <a [href]="billingUrl" target="_blank" class="nav-button">Manage Billing</a>
         } @else {
           <div class="subscription-info">
-            <p class="subscription-text">While we'd love to offer this service for free, a small $2.99 subscription is currently needed to cover SMS and email delivery costs.</p>
+            <p class="subscription-text">I would really love to offer this service for free. But for the moment, a $2.99 subscription is needed to cover the costs of SMS and email delivery as this can be very expensive.</p>
             <button (click)="activateSubscription()" [disabled]="loading()" class="nav-button activate-btn">
               {{ loading() ? 'Processing...' : 'Recieve alerts for $2.99 p/w' }}
             </button>

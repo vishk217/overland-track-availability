@@ -39,6 +39,7 @@ def get_user_email(user_id):
 def handle_webhook_event(event_type, data):
     users_table = dynamodb.Table(os.environ['USERS_TABLE'])
     subscriptions_table = dynamodb.Table(os.environ['SUBSCRIPTIONS_TABLE'])
+    notifications_table = dynamodb.Table(os.environ['NOTIFICATIONS_TABLE'])
     
     if event_type == 'customer.subscription.created':
         subscription = data['object']
@@ -52,7 +53,7 @@ def handle_webhook_event(event_type, data):
             subscriptions_table.put_item(Item={
                 'user_id': user_id,
                 'subscription_id': subscription['id'],
-                'status': subscription['status'],
+                'status': subscription['status'] == 'active',
                 'renews_at': renews_at.isoformat(),
                 'created_at': datetime.utcnow().isoformat(),
                 'will_cancel': False
@@ -71,6 +72,19 @@ def handle_webhook_event(event_type, data):
         
         if user_id:
             if event_type == 'customer.subscription.deleted':
+                # Delete all notifications for the user
+                try:
+                    response = notifications_table.scan(
+                        FilterExpression='user_id = :user_id',
+                        ExpressionAttributeValues={':user_id': user_id}
+                    )
+                    for item in response['Items']:
+                        notifications_table.delete_item(
+                            Key={'notification_id': item['notification_id']}
+                        )
+                except Exception as e:
+                    print(f"Error deleting notifications for user {user_id}: {e}")
+                
                 subscriptions_table.delete_item(Key={'user_id': user_id})
                 users_table.update_item(
                     Key={'user_id': user_id},
@@ -85,7 +99,7 @@ def handle_webhook_event(event_type, data):
                     UpdateExpression='SET #status = :status, will_cancel = :will_cancel, renews_at = :renews_at',
                     ExpressionAttributeNames={'#status': 'status'},
                     ExpressionAttributeValues={
-                        ':status': subscription['status'],
+                        ':status': subscription['status'] == 'active',
                         ':will_cancel': will_cancel,
                         ':renews_at': renews_at.isoformat()
                     }
