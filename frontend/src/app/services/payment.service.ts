@@ -6,6 +6,7 @@ export interface SubscriptionStatus {
   subscription_id: string;
   status: string;
   renews_at: number;
+  will_cancel: boolean;
 }
 
 export interface CheckoutResponse {

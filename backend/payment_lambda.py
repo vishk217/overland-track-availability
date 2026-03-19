@@ -3,9 +3,7 @@ import boto3
 import stripe
 import jwt
 import os
-import hmac
-import hashlib
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
 
 dynamodb = boto3.resource('dynamodb')
 secrets_client = boto3.client('secretsmanager')
@@ -48,14 +46,16 @@ def handle_webhook_event(event_type, data):
         user_id = subscription.get('metadata', {}).get('user_id')
         
         if user_id:
-            renews_at = datetime.utcnow() + timedelta(days=7)
+            # Use Stripe's current_period_end for accurate renewal date
+            renews_at = datetime.fromtimestamp(subscription['current_period_end'], timezone.utc)
             
             subscriptions_table.put_item(Item={
                 'user_id': user_id,
                 'subscription_id': subscription['id'],
                 'status': subscription['status'],
                 'renews_at': renews_at.isoformat(),
-                'created_at': datetime.utcnow().isoformat()
+                'created_at': datetime.utcnow().isoformat(),
+                'will_cancel': False
             })
             
             users_table.update_item(
@@ -78,11 +78,17 @@ def handle_webhook_event(event_type, data):
                     ExpressionAttributeValues={':active': False}
                 )
             else:
+                will_cancel = subscription.get('cancel_at_period_end', False)
+                renews_at = datetime.fromtimestamp(subscription['current_period_end'], timezone.utc)
                 subscriptions_table.update_item(
                     Key={'user_id': user_id},
-                    UpdateExpression='SET #status = :status',
+                    UpdateExpression='SET #status = :status, will_cancel = :will_cancel, renews_at = :renews_at',
                     ExpressionAttributeNames={'#status': 'status'},
-                    ExpressionAttributeValues={':status': subscription['status']}
+                    ExpressionAttributeValues={
+                        ':status': subscription['status'],
+                        ':will_cancel': will_cancel,
+                        ':renews_at': renews_at.isoformat()
+                    }
                 )
                 users_table.update_item(
                     Key={'user_id': user_id},
@@ -228,7 +234,8 @@ def lambda_handler(event, context):
                 'body': json.dumps({
                     'subscription_id': subscription['subscription_id'],
                     'status': subscription['status'],
-                    'renews_at': renews_timestamp
+                    'renews_at': renews_timestamp,
+                    'will_cancel': subscription.get('will_cancel', False)
                 })
             }
         
