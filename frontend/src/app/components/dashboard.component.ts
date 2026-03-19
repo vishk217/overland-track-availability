@@ -39,7 +39,11 @@ import { NotificationService, NotificationPreference } from '../services/notific
           <h3>Subscription Status</h3>
           <p>Status: <span [class]="subscription()?.status">{{ subscription()?.status }}</span></p>
           @if (subscription()?.renews_at) {
-            <p>Renews/Expires: {{ subscription()?.renews_at | date }}</p>
+            <p>
+              <span [class]="subscription()?.will_cancel ? 'expires-text' : ''">
+                {{ subscription()?.will_cancel ? 'Expires On' : 'Renews' }}
+              </span>: {{ subscription()?.renews_at | date }}
+            </p>
           }
         </div>
       }
@@ -55,9 +59,9 @@ import { NotificationService, NotificationPreference } from '../services/notific
           <a [href]="billingUrl" target="_blank" class="nav-button">Manage Billing</a>
         } @else {
           <div class="subscription-info">
-            <p class="subscription-text">A subscription is required to receive real-time availability notifications via email and SMS.</p>
+            <p class="subscription-text">While we'd love to offer this service for free, a small $2.99 subscription is currently needed to cover SMS and email delivery costs.</p>
             <button (click)="activateSubscription()" [disabled]="loading()" class="nav-button activate-btn">
-              {{ loading() ? 'Processing...' : 'Activate my subscription' }}
+              {{ loading() ? 'Processing...' : 'Recieve alerts for $2.99 p/w' }}
             </button>
           </div>
         }
@@ -333,6 +337,10 @@ import { NotificationService, NotificationPreference } from '../services/notific
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
+    }
+    .expires-text {
+      color: #dc3545;
+      font-weight: 600;
     }
     @media (max-width: 768px) {
       header {
