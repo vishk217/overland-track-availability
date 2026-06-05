@@ -138,7 +138,7 @@ class OverlandTrackAutomation:
                         
                         date = "/".join([day, month, year])
                         if availability:
-                            availabilityString = f"{availability} spots Available"
+                            availabilityString = f"{availability} Spots Available"
                         else:
                             availabilityString = None
                         response[date] = availabilityString or "Fully Booked"

@@ -190,17 +190,17 @@ resource "aws_ses_template" "availability_alert" {
         <div class="details">
             <h3>Booking Details</h3>
             <div class="detail-item">
-                <span class="detail-label">Date:</span>
+                <span class="detail-label">Date:&nbsp;</span>
                 <span class="detail-value">{{date}}</span>
             </div>
             <div class="detail-item">
-                <span class="detail-label">Availability:</span>
+                <span class="detail-label">Availability:&nbsp;</span>
                 <span class="detail-value">{{availability}}</span>
             </div>
         </div>
         
         <div style="text-align: center;">
-            <a href="https://azapps.customlinc.com.au/tasparksoverland/" class="cta-button">
+            <a href="https://azapps.customlinc.com.au/tasparksoverland/BookingCat/Availability/?Category=OVERLAND" class="cta-button">
                 Book Now
             </a>
         </div>
@@ -222,7 +222,7 @@ Booking Details:
 - Date: {{date}}
 - Availability: {{availability}}
 
-Book now: https://azapps.customlinc.com.au/tasparksoverland/
+Book now: https://azapps.customlinc.com.au/tasparksoverland/BookingCat/Availability/?Category=OVERLAND
 
 This alert was sent because you requested notifications for Overland Track availability.
 Manage your alerts at https://overlandtrackavailability.com/dashboard
