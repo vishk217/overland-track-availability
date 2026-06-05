@@ -33,7 +33,7 @@ def check_rate_limit(user_id):
     
     return len(response['Items']) < 5  # Max 5 notifications per day
 
-def send_notification(user_id, contact_method, contact_value, message):
+def send_notification(user_id, contact_method, contact_value, change):
     print(f"Attempting to send {contact_method} notification to user {user_id}")
     
     if not check_rate_limit(user_id):
@@ -44,18 +44,24 @@ def send_notification(user_id, contact_method, contact_value, message):
     
     try:
         if contact_method == 'email':
-            print(f"Sending email notification to {contact_value} via SES")
-            ses.send_email(
+            print(f"Sending email notification to {contact_value} via SES template")
+            ses.send_templated_email(
                 Source=os.environ['SES_SENDER_EMAIL'],
                 Destination={'ToAddresses': [contact_value]},
-                Message={
-                    'Subject': {'Data': 'Overland Track Availability Alert'},
-                    'Body': {'Text': {'Data': message}}
-                }
+                Template=os.environ['SES_TEMPLATE_NAME'],
+                TemplateData=json.dumps({
+                    'date': change['date'],
+                    'availability': change['availability']
+                })
             )
             print(f"Email notification sent successfully to {contact_value}")
         elif contact_method == 'sms':
             print(f"Sending SMS notification to {contact_value}")
+            message = f"Overland Track availability alert!\n\n"
+            message += f"Date: {change['date']}\n"
+            message += f"Availability: {change['availability']}\n"
+            message += f"Book now: https://azapps.customlinc.com.au/tasparksoverland/BookingCat/Availability/?Category=OVERLAND"
+            
             sns.publish(
                 PhoneNumber=contact_value,
                 Message=message
@@ -72,7 +78,7 @@ def send_notification(user_id, contact_method, contact_value, message):
             'user_id': user_id,
             'sent_at': datetime.utcnow().isoformat(),
             'contact_method': contact_method,
-            'message': message,
+            'message': f"Alert for {change['date']}: {change['availability']}",
             'expires_at': int((datetime.utcnow() + timedelta(days=30)).timestamp())
         })
         print(f"Notification history recorded successfully for user {user_id}")
@@ -177,17 +183,12 @@ def lambda_handler(event, context):
                             
                             print(f"Match found! User {notification['user_id']} wants {min_quantity}+ spots, {change['spots']} available on {change['date']}")
                             
-                            message = f"Overland Track availability alert!\n\n"
-                            message += f"Date: {change['date']}\n"
-                            message += f"Availability: {change['availability']}\n"
-                            message += f"Book now: https://azapps.customlinc.com.au/tasparksoverland/BookingCat/Availability/?Category=OVERLAND"
-                            
                             print(f"Sending notification to user {notification['user_id']} for {change['date']}")
                             send_notification(
                                 notification['user_id'],
                                 notification['contact_method'],
                                 notification['contact_value'],
-                                message
+                                change
                             )
                             notifications_sent += 1
                             break  # Only send one notification per user per run

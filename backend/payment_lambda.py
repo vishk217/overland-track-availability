@@ -242,12 +242,15 @@ def lambda_handler(event, context):
                 # Handle legacy Unix timestamp data
                 renews_timestamp = int(renews_at) * 1000
             
+            raw_status = subscription['status']
+            status_str = 'active' if raw_status is True or raw_status == 'active' else 'inactive'
+
             return {
                 'statusCode': 200,
                 'headers': cors_headers,
                 'body': json.dumps({
                     'subscription_id': subscription['subscription_id'],
-                    'status': subscription['status'],
+                    'status': status_str,
                     'renews_at': renews_timestamp,
                     'will_cancel': subscription.get('will_cancel', False)
                 })
