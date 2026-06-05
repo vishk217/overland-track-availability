@@ -47,7 +47,7 @@ def handle_webhook_event(event_type, data):
         user_id = subscription.get('metadata', {}).get('user_id')
         
         if user_id:
-            period_end = subscription.get('current_period_end')
+            period_end = subscription['items']['data'][0]['current_period_end']
             renews_at = datetime.fromtimestamp(period_end, timezone.utc) if period_end else None
             
             subscriptions_table.put_item(Item={
@@ -92,8 +92,9 @@ def handle_webhook_event(event_type, data):
                     ExpressionAttributeValues={':active': False}
                 )
             else:
-                will_cancel = subscription.get('cancel_at_period_end', False)
-                renews_at = datetime.fromtimestamp(subscription['current_period_end'], timezone.utc)
+                will_cancel = subscription.get('cancel_at_period_end', False) or subscription.get('cancel_at') is not None
+                period_end = subscription['items']['data'][0]['current_period_end']
+                renews_at = datetime.fromtimestamp(period_end, timezone.utc)
                 subscriptions_table.update_item(
                     Key={'user_id': user_id},
                     UpdateExpression='SET #status = :status, will_cancel = :will_cancel, renews_at = :renews_at',
