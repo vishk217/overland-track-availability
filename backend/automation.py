@@ -22,16 +22,16 @@ class OverlandTrackAutomation:
         # TODO
 
         response = {
-            "05/Jun/2026": "Fully Booked",
-            "06/Jun/2026": "Fully Booked",
-            "07/Jun/2026": "2 spots left",
-            "08/Jun/2026": "Fully Booked",
-            "09/Jun/2026": "5 spots left",
+            "5/Jun/2026": "Fully Booked",
+            "6/Jun/2026": "Fully Booked",
+            "7/Jun/2026": "2 spots Available",
+            "8/Jun/2026": "Fully Booked",
+            "9/Jun/2026": "5 spots Available",
             "10/Jun/2026": "Fully Booked",
             "11/Jun/2026": "Fully Booked",
-            "12/Jun/2026": "1 spots left",
+            "12/Jun/2026": "1 spots Available",
             "13/Jun/2026": "Fully Booked",
-            "14/Jun/2026": "3 spots left"
+            "14/Jun/2026": "3 spots Available"
         }
 
 
@@ -138,7 +138,7 @@ class OverlandTrackAutomation:
                         
                         date = "/".join([day, month, year])
                         if availability:
-                            availabilityString = f"{availability} spots left"
+                            availabilityString = f"{availability} spots Available"
                         else:
                             availabilityString = None
                         response[date] = availabilityString or "Fully Booked"
