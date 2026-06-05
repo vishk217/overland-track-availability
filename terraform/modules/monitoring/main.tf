@@ -1,9 +1,3 @@
-resource "aws_cloudwatch_log_group" "lambda_logs" {
-  for_each          = toset(var.lambda_log_group_names)
-  name              = each.value
-  retention_in_days = var.log_retention_days
-}
-
 resource "aws_sns_topic" "rate_limit_alerts" {
   name = "overland-rate-limit-alerts"
 }
