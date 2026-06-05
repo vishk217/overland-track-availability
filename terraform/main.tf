@@ -71,6 +71,12 @@ module "lambda_notifications" {
 module "monitoring" {
   source = "./modules/monitoring"
   lambda_log_group_name = "/aws/lambda/${var.lambda_function_name}-notification-service"
+  lambda_log_group_names = [
+    "/aws/lambda/${var.lambda_function_name}-notification-service",
+    "/aws/lambda/${var.lambda_function_name}-auth",
+    "/aws/lambda/${var.lambda_function_name}-payment",
+    "/aws/lambda/${var.lambda_function_name}-notifications",
+  ]
 }
 
 module "ses" {
