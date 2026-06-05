@@ -48,8 +48,8 @@ variable "app_secrets_arn" {
   type        = string
 }
 
-variable "ses_sender_email" {
-  description = "Verified SES sender email address"
+variable "ses_template_name" {
+  description = "SES template name for availability alerts"
   type        = string
 }
 
@@ -73,6 +73,11 @@ variable "schedule_expression" {
   description = "CloudWatch Events schedule expression"
   type        = string
   default     = "rate(5 minutes)"
+}
+
+variable "ses_sender_email" {
+  description = "Verified SES sender email address"
+  type        = string
 }
 
 variable "frontend_url" {

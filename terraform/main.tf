@@ -58,6 +58,7 @@ module "lambda_notifications" {
   notification_history_table_arn = module.dynamodb.notification_history_table_arn
   app_secrets_arn = module.secrets.app_secrets_arn
   ses_sender_email = var.ses_sender_email
+  ses_template_name = module.ses.template_name
   s3_bucket_arn = module.s3.bucket_arn
   notification_service_image_uri = "${module.ecr.repository_url}:${var.image_tag}"
   frontend_url = "https://${var.domain_name[0]}"

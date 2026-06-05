@@ -79,6 +79,7 @@ resource "aws_lambda_function" "notification_service" {
       NOTIFICATIONS_TABLE = var.notifications_table_name
       NOTIFICATION_HISTORY_TABLE = var.notification_history_table_name
       SES_SENDER_EMAIL = var.ses_sender_email
+      SES_TEMPLATE_NAME = var.ses_template_name
     })
   }
 }
@@ -148,7 +149,8 @@ resource "aws_iam_role_policy" "lambda_policy" {
       {
         Effect = "Allow"
         Action = [
-          "ses:SendEmail"
+          "ses:SendEmail",
+          "ses:SendTemplatedEmail"
         ]
         Resource = "*"
       },

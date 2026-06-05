@@ -12,7 +12,7 @@ output "dkim_tokens" {
   value       = aws_ses_domain_dkim.main.dkim_tokens
 }
 
-output "mail_from_domain" {
-  description = "MAIL FROM domain - requires MX and SPF records in Namecheap"
-  value       = aws_ses_domain_mail_from.main.mail_from_domain
+output "template_name" {
+  description = "SES template name for availability alerts"
+  value       = aws_ses_template.availability_alert.name
 }
