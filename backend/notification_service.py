@@ -100,10 +100,8 @@ def check_availability_changes(current_data, previous_data):
         def get_spot_count(avail_text):
             if 'Fully Booked' in avail_text:
                 return 0
-            elif 'spots left' in avail_text:
-                parts = avail_text.split()
-                return int(parts[0]) if parts[0].isdigit() else 0
-            return 0
+            parts = avail_text.split()
+            return int(parts[0]) if parts[0].isdigit() else 0
         
         current_spots = get_spot_count(availability)
         previous_spots = get_spot_count(previous_availability)
