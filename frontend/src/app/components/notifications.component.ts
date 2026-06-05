@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { NotificationService } from '../services/notification.service';
 import intlTelInput from 'intl-tel-input';
+import { DateTime } from 'luxon';
 
 @Component({
   selector: 'app-notifications',
@@ -273,11 +274,7 @@ export class NotificationsComponent implements AfterViewInit, OnDestroy {
       const dates = [];
       
       for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-        dates.push(d.toLocaleDateString('en-AU', {
-          day: 'numeric',
-          month: 'short',
-          year: 'numeric'
-        }).replace(/ /g, '/'));
+        dates.push(DateTime.fromJSDate(d).toFormat('d/MMM/yyyy'));
       }
       
       if (dates.length === 0) {
