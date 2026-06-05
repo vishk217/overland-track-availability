@@ -236,7 +236,9 @@ def lambda_handler(event, context):
             subscription = response['Item']
             # Handle both old expires_at and new renews_at fields
             renews_at = subscription.get('renews_at') or subscription.get('expires_at')
-            if isinstance(renews_at, str):
+            if renews_at is None:
+                renews_timestamp = None
+            elif isinstance(renews_at, str):
                 renews_timestamp = int(datetime.fromisoformat(renews_at).timestamp() * 1000)
             else:
                 # Handle legacy Unix timestamp data
