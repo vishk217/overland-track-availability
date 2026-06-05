@@ -85,6 +85,16 @@ def send_notification(user_id, contact_method, contact_value, change):
         import traceback
         print(f"Traceback: {traceback.format_exc()}")
 
+def normalize_date(date_str):
+    """Normalize date strings like '9/Jun/2026' or '9/June/2026' to 'd/Mon/YYYY' format."""
+    from datetime import datetime as dt
+    for fmt in ('%d/%b/%Y', '%d/%B/%Y'):
+        try:
+            return dt.strptime(date_str, fmt).strftime('%-d/%b/%Y')
+        except ValueError:
+            continue
+    return date_str
+
 def check_availability_changes(current_data, previous_data):
     if not previous_data:
         return []
@@ -167,13 +177,13 @@ def lambda_handler(event, context):
                 print(f"Processing {len(response['Items'])} notification preferences on page {page_count}")
                 
                 for notification in response['Items']:
-                    user_dates = notification['dates']
+                    user_dates = [normalize_date(d) for d in notification['dates']]
                     min_quantity = notification['quantity']
                     print(f"Checking user {notification['user_id']}: wants {min_quantity}+ spots for dates {user_dates}")
                     
                     # Check if any changes match user preferences
                     for change in changes:
-                        if (change['date'] in user_dates and 
+                        if (normalize_date(change['date']) in user_dates and 
                             change['spots'] >= min_quantity):
                             
                             print(f"Match found! User {notification['user_id']} wants {min_quantity}+ spots, {change['spots']} available on {change['date']}")
@@ -188,7 +198,7 @@ def lambda_handler(event, context):
                             notifications_sent += 1
                             break  # Only send one notification per user per run
                         else:
-                            if change['date'] not in user_dates:
+                            if normalize_date(change['date']) not in user_dates:
                                 print(f"  - Date {change['date']} not in user's preferred dates")
                             elif change['spots'] < min_quantity:
                                 print(f"  - Only {change['spots']} spots available, user wants {min_quantity}+")
