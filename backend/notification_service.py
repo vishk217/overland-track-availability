@@ -2,6 +2,7 @@ import json
 import boto3
 import os
 from datetime import datetime, timedelta
+from boto3.dynamodb.conditions import Key
 from automation import OverlandTrackAutomation
 
 dynamodb = boto3.resource('dynamodb')
@@ -24,11 +25,7 @@ def check_rate_limit(user_id):
     today = datetime.utcnow().strftime('%Y-%m-%d')
     
     response = history_table.query(
-        KeyConditionExpression='user_id = :user_id AND begins_with(sent_at, :today)',
-        ExpressionAttributeValues={
-            ':user_id': user_id,
-            ':today': today
-        }
+        KeyConditionExpression=Key('user_id').eq(user_id) & Key('sent_at').begins_with(today)
     )
     
     return len(response['Items']) < 5  # Max 5 notifications per day

@@ -201,7 +201,7 @@ resource "aws_ses_template" "availability_alert" {
         
         <div style="text-align: center;">
             <a href="https://azapps.customlinc.com.au/tasparksoverland/" class="cta-button">
-                Book Now - Don't Miss Out!
+                Book Now
             </a>
         </div>
         
