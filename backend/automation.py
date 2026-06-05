@@ -22,20 +22,17 @@ class OverlandTrackAutomation:
         # TODO
 
         response = {
-            "lastUpdated": "June 05, 2026 at 02:00 PM AEST",
-            "response": {
-                "05/06/2026": "Fully Booked",
-                "06/06/2026": "Fully Booked",
-                "07/06/2026": "2 spots left",
-                "08/06/2026": "Fully Booked",
-                "09/06/2026": "5 spots left",
-                "10/06/2026": "Fully Booked",
-                "11/06/2026": "Fully Booked",
-                "12/06/2026": "1 spots left",
-                "13/06/2026": "Fully Booked",
-                "14/06/2026": "3 spots left"
-            }
-            }
+            "05/06/2026": "Fully Booked",
+            "06/06/2026": "Fully Booked",
+            "07/06/2026": "2 spots left",
+            "08/06/2026": "Fully Booked",
+            "09/06/2026": "5 spots left",
+            "10/06/2026": "Fully Booked",
+            "11/06/2026": "Fully Booked",
+            "12/06/2026": "1 spots left",
+            "13/06/2026": "Fully Booked",
+            "14/06/2026": "3 spots left"
+        }
 
 
         return {"lastUpdated": datetime.now(pytz.timezone('Australia/Sydney')).strftime("%B %d, %Y at %I:%M %p AEST"), "response": response}
