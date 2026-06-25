@@ -98,7 +98,6 @@ import { NotificationService, NotificationPreference } from '../services/notific
       padding: 2rem;
       max-width: 900px;
       margin: 0 auto;
-      min-height: 100vh;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
     .dashboard > p:first-child {
