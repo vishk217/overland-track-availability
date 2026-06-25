@@ -74,13 +74,13 @@ def handle_webhook_event(event_type, data):
             if event_type == 'customer.subscription.deleted':
                 # Delete all notifications for the user
                 try:
-                    response = notifications_table.scan(
-                        FilterExpression='user_id = :user_id',
+                    response = notifications_table.query(
+                        KeyConditionExpression='user_id = :user_id',
                         ExpressionAttributeValues={':user_id': user_id}
                     )
                     for item in response['Items']:
                         notifications_table.delete_item(
-                            Key={'notification_id': item['notification_id']}
+                            Key={'user_id': user_id, 'notification_id': item['notification_id']}
                         )
                 except Exception as e:
                     print(f"Error deleting notifications for user {user_id}: {e}")
