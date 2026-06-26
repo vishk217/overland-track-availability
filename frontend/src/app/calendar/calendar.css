@@ -319,6 +319,71 @@
   flex-wrap: wrap;
 }
 
+.coffee-section {
+  margin: 20px 0 30px 0;
+}
+
+.coffee-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #ffdd44, #ff8800);
+  color: #333;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 136, 0, 0.3);
+  border: 2px solid #ff8800;
+  position: relative;
+  overflow: hidden;
+}
+
+.coffee-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s;
+}
+
+.coffee-link:hover::before {
+  left: 100%;
+}
+
+.coffee-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 136, 0, 0.4);
+  background: linear-gradient(135deg, #ffe066, #ff9922);
+}
+
+.coffee-icon {
+  font-size: 24px;
+  animation: steam 2s ease-in-out infinite alternate;
+}
+
+@keyframes steam {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-2px); }
+}
+
+.coffee-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.coffee-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  line-height: 1.2;
+}
+
 .facebook-link, .parks-link {
   display: flex;
   flex-direction: column;
