@@ -19,25 +19,6 @@ class OverlandTrackAutomation:
 
     def automation(self):
 
-        # TODO
-
-        response = {
-            "5/Jun/2026": "Fully Booked",
-            "6/Jun/2026": "Fully Booked",
-            "7/Jun/2026": "2 spots Available",
-            "8/Jun/2026": "Fully Booked",
-            "9/Jun/2026": "5 spots Available",
-            "10/Jun/2026": "Fully Booked",
-            "11/Jun/2026": "Fully Booked",
-            "12/Jun/2026": "1 spots Available",
-            "13/Jun/2026": "Fully Booked",
-            "14/Jun/2026": "3 spots Available"
-        }
-
-
-        return {"lastUpdated": datetime.now(pytz.timezone('Australia/Sydney')).strftime("%B %d, %Y at %I:%M %p AEST"), "response": response}
-
-
         start_time = time.time()
         print("Running Automation...")
         response = {}

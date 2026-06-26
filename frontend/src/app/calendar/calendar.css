@@ -327,48 +327,25 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  padding: 16px 24px;
-  background: linear-gradient(135deg, #ffdd44, #ff8800);
-  color: #333;
+  padding: 12px 20px;
+  background: #f8f9fa;
+  color: #495057;
   text-decoration: none;
-  border-radius: 12px;
-  font-weight: 600;
+  border-radius: 8px;
+  font-weight: 500;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(255, 136, 0, 0.3);
-  border: 2px solid #ff8800;
-  position: relative;
-  overflow: hidden;
-}
-
-.coffee-link::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  transition: left 0.5s;
-}
-
-.coffee-link:hover::before {
-  left: 100%;
+  border: 2px solid #dee2e6;
 }
 
 .coffee-link:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(255, 136, 0, 0.4);
-  background: linear-gradient(135deg, #ffe066, #ff9922);
+  background: #e9ecef;
+  border-color: #ced4da;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .coffee-icon {
-  font-size: 24px;
-  animation: steam 2s ease-in-out infinite alternate;
-}
-
-@keyframes steam {
-  0% { transform: translateY(0px); }
-  100% { transform: translateY(-2px); }
+  font-size: 20px;
 }
 
 .coffee-text {
@@ -378,10 +355,17 @@
 }
 
 .coffee-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #333;
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
   line-height: 1.2;
+}
+
+.coffee-subtitle {
+  font-size: 12px;
+  font-weight: 400;
+  color: #6c757d;
+  margin-top: 2px;
 }
 
 .facebook-link, .parks-link {

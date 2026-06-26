@@ -5,7 +5,11 @@
       <div class="nav-links">
         <a routerLink="/" class="nav-link">Live Calendar</a>
         <a routerLink="/register" class="nav-link">Get Alerts</a>
-        <a routerLink="/login" class="nav-link">Login</a>
+        @if (!authService.isAuthenticated()) {
+          <a routerLink="/login" class="nav-link">Login</a>
+        } @else {
+          <a routerLink="/dashboard" class="nav-link">Dashboard</a>
+        }
       </div>
     </div>
   </nav>
@@ -15,8 +19,12 @@
   <div class="footer-content">
     <div class="footer-links">
       <a routerLink="/">Home</a>
-      <a routerLink="/register">Sign Up</a>
-      <a routerLink="/login">Login</a>
+      @if (!authService.isAuthenticated()) {
+        <a routerLink="/register">Sign Up</a>
+        <a routerLink="/login">Login</a>
+      } @else {
+        <a routerLink="/dashboard">Dashboard</a>
+      }
       <a href="https://parks.tas.gov.au/explore-our-parks/cradle-mountain/overland-track" target="_blank">Official Booking</a>
     </div>
     <div class="footer-contact">
@@ -25,7 +33,20 @@
     </div>
     <div class="footer-about">
       <h4>About This Service</h4>
-      <p>This free tool checks Tasmania Parks booking system multiple times daily to track Overland Track availability. <a routerLink="/register">Create alerts</a> to get notified instantly when your preferred dates open up, or <a routerLink="/login">manage your existing notifications</a>.</p>
+      <p>This tool checks Tasmania Parks booking system multiple times daily to track Overland Track availability. <a routerLink="/register">Create alerts</a> to get notified instantly when your preferred dates open up, or <a routerLink="/dashboard">manage your existing notifications</a>.</p>
+    </div>
+    <div class="footer-connect">
+      <h4>Connect & Book</h4>
+      <div class="footer-external-links">
+        <a href="https://www.facebook.com/groups/2042563289352427/" target="_blank" class="footer-facebook-link">
+          <img src="assets/facebook.png" alt="Overland Track Facebook Group" class="footer-facebook-icon">
+          <span>Join Facebook Community</span>
+        </a>
+        <a href="https://parks.tas.gov.au/explore-our-parks/cradle-mountain/overland-track" target="_blank" class="footer-parks-link">
+          <img src="assets/tasparks.png" alt="Parks Tasmania Official Booking" class="footer-parks-icon">
+          <span>Official Parks Tasmania</span>
+        </a>
+      </div>
     </div>
   </div>
 </footer>

@@ -31,33 +31,14 @@
 .nav-logo {
   font-size: 1.4rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #2e7d32, #4caf50);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #495057;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: color 0.2s ease;
   position: relative;
 }
 
-.nav-logo::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 3px;
-  background: linear-gradient(135deg, #2e7d32, #4caf50);
-  transition: width 0.3s ease;
-  border-radius: 2px;
-}
-
-.nav-logo:hover::after {
-  width: 100%;
-}
-
 .nav-logo:hover {
-  transform: translateY(-1px);
+  color: #2e7d32;
 }
 
 .nav-links {
@@ -70,35 +51,15 @@
   color: #495057;
   text-decoration: none;
   font-weight: 600;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   padding: 0.75rem 1.25rem;
-  border-radius: 12px;
-  position: relative;
-  overflow: hidden;
+  border-radius: 8px;
   background: transparent;
-  border: 2px solid transparent;
-}
-
-.nav-link::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #2e7d32, #4caf50);
-  transition: left 0.3s ease;
-  z-index: -1;
-}
-
-.nav-link:hover::before {
-  left: 0;
 }
 
 .nav-link:hover {
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+  color: #2e7d32;
+  background: #f8f9fa;
 }
 
 @media (max-width: 768px) {
@@ -217,6 +178,58 @@
 
 .footer-about a:hover {
   text-decoration: underline;
+}
+
+.footer-connect {
+  margin: 1rem 0;
+}
+
+.footer-connect h4 {
+  color: #495057;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.footer-external-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.footer-facebook-link, .footer-parks-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 1rem;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.footer-facebook-link:hover, .footer-parks-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.footer-facebook-link span, .footer-parks-link span {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #495057;
+}
+
+.footer-facebook-icon {
+  width: 50px;
+  height: 32px;
+}
+
+.footer-parks-icon {
+  width: 32px;
+  height: 32px;
 }
 
 .footer-copy {
