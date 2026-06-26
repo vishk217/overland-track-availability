@@ -1,13 +1,18 @@
 <div class="calendar-container">
-    <h1 class="page-header">Overland Track Availability</h1>
-    <h2 class="page-description">Be first to know when your preferred dates open up:</h2>
+    <h1 class="page-header">Overland Track Booking Availability - Live Calendar</h1>
+    <h2 class="page-description">Real-Time Overland Track Booking Status</h2>
+    <p class="intro-text">Track live booking availability for Tasmania's premier hike from Cradle Mountain to Lake St Clair. Get instant alerts when your preferred dates become available.</p>
+    
     <div class="button-group">
-      <button class="notify-button" (click)="onSignUpClick()">Sign up to recieve alerts via email or SMS</button>
+      <button class="notify-button" (click)="onSignUpClick()">Sign up to receive alerts via email or SMS</button>
       <button class="login-button" (click)="onLoginClick()">Already have an account? Login</button>
     </div>
+    
     @if (availabilityData()) {
       <p class="last-updated">Calendar up to date as of {{ availabilityData()?.lastUpdated }}</p>
     }
+    
+    <h3 class="calendar-section-title">Monthly Availability View</h3>
     <div class="calendar-headline">
       <div class="calendar-headline-month">
         {{ firstDayOfActiveMonth().monthShort }},
@@ -56,16 +61,25 @@
         }
       }
     </div>
-    <div class="support-section">
-      <h4>Found the availability that you were after?</h4>
+    <section class="support-section">
+      <h3>Helpful Resources</h3>
+      <h4>Found the availability you were looking for?</h4>
+      <p>Support this free service and help keep it running:</p>
       <a href="https://buymeacoffee.com/derrm024" target="_blank" class="coffee-link">☕ Buy me a coffee</a>
-    </div>
-    <div class="facebook-section">
-      <a href="https://www.facebook.com/groups/2042563289352427/" target="_blank" class="facebook-link">
-        <img src="assets/facebook.png" alt="Facebook" class="facebook-icon">
-      </a>
-      <a href="https://parks.tas.gov.au/explore-our-parks/cradle-mountain/overland-track" target="_blank" class="parks-link">
-        <img src="assets/tasparks.png" alt="Parks Tasmania" class="parks-icon">
-      </a>
-    </div>
+      
+      <h4>Connect & Book</h4>
+      <div class="external-links">
+        <a href="https://www.facebook.com/groups/2042563289352427/" target="_blank" class="facebook-link">
+          <img src="assets/facebook.png" alt="Overland Track Facebook Group" class="facebook-icon">
+          <span>Join Facebook Community</span>
+        </a>
+        <a href="https://parks.tas.gov.au/explore-our-parks/cradle-mountain/overland-track" target="_blank" class="parks-link">
+          <img src="assets/tasparks.png" alt="Parks Tasmania Official Booking" class="parks-icon">
+          <span>Official Parks Tasmania</span>
+        </a>
+      </div>
+      
+      <h4>About This Service</h4>
+      <p>This free tool checks Tasmania Parks booking system multiple times daily to track Overland Track availability. <a routerLink="/register">Create alerts</a> to get notified instantly when your preferred dates open up, or <a routerLink="/login">manage your existing notifications</a>.</p>
+    </section>
 </div>

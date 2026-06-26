@@ -1,9 +1,30 @@
 <div class="app-content">
+  <nav class="main-nav">
+    <div class="nav-container">
+      <a routerLink="/" class="nav-logo">Overland Track Availability</a>
+      <div class="nav-links">
+        <a routerLink="/" class="nav-link">Live Calendar</a>
+        <a routerLink="/register" class="nav-link">Get Alerts</a>
+        <a routerLink="/login" class="nav-link">Login</a>
+      </div>
+    </div>
+  </nav>
   <router-outlet></router-outlet>
 </div>
 <footer class="app-footer">
   <div class="footer-content">
-    <span class="footer-icon">✉</span>
-    <span>Contact: <a href="mailto:support@overlandtrackavailability.com">support@overlandtrackavailability.com</a></span>
+    <div class="footer-links">
+      <a routerLink="/">Home</a>
+      <a routerLink="/register">Sign Up</a>
+      <a routerLink="/login">Login</a>
+      <a href="https://parks.tas.gov.au/explore-our-parks/cradle-mountain/overland-track" target="_blank">Official Booking</a>
+    </div>
+    <div class="footer-contact">
+      <span class="footer-icon">✉</span>
+      <span>Contact: <a href="mailto:support@overlandtrackavailability.com">support@overlandtrackavailability.com</a></span>
+    </div>
+    <div class="footer-copy">
+      <p>© 2024 Overland Track Availability. Tracking Tasmania wilderness booking availability.</p>
+    </div>
   </div>
 </footer>

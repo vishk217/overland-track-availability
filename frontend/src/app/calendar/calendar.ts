@@ -12,7 +12,7 @@ import {
 import { DateTime, Info, Interval } from 'luxon';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 interface AvailabilityData {
@@ -24,7 +24,7 @@ interface AvailabilityData {
   selector: 'calendar',
   templateUrl: './calendar.html',
   styleUrls: ['./calendar.css'],
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   standalone: true,
 })
 export class CalendarComponent implements OnInit {

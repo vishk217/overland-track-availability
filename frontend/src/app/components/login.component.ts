@@ -11,7 +11,8 @@ import { AuthService } from '../services/auth.service';
   template: `
     <div class="login-container">
       <p><a routerLink="/">← Back to Calendar</a></p>
-      <h2>Login</h2>
+      <h1>Login to Your Account</h1>
+      <h2>Access Your Overland Track Alerts</h2>
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
           <input type="email" formControlName="email" placeholder="Email" required>
@@ -56,12 +57,19 @@ import { AuthService } from '../services/auth.service';
     .login-container > p:first-child a:hover {
       color: #007bff;
     }
-    h2 {
+    h1 {
       text-align: center;
       color: #55437e;
-      margin-bottom: 2rem;
+      margin-bottom: 0.5rem;
       font-size: 1.8rem;
-      font-weight: 600;
+      font-weight: 700;
+    }
+    h2 {
+      text-align: center;
+      color: #6c757d;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+      font-weight: 400;
     }
     .form-group {
       margin-bottom: 1.5rem;
